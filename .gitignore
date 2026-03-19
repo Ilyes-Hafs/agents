@@ -1,1 +1,6 @@
 .aider*
+kokoro-v0_19.onnx
+kokoro-v0_19.onnx
+voices-v1.0.bin
+voices.bin
+__pycache__/
