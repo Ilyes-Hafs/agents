@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOCAL AI — System Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070a0f;
+    --surface: #0d1117;
+    --surface2: #131920;
+    --border: #1e2d3d;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --danger: #ef4444;
+    --glow: 0 0 20px rgba(0,212,255,0.15);
+    --glow-strong: 0 0 40px rgba(0,212,255,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Scanlines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.05) 2px,
+      rgba(0,0,0,0.05) 4px
+    );
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* SIDEBAR NAV */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-logo .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .sidebar-status {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  .status-dot.offline { background: var(--muted); animation: none; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--accent3); }
+    50% { opacity: 0.5; box-shadow: none; }
+  }
+
+  .nav-section {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 0 24px 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 240px;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: 200px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 {
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,212,255,0.4);
+  }
+
+  .hero-desc {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 580px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 60px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.6s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+
+  .icon-blue { background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.2); }
+  .icon-purple { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.2); }
+  .icon-green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); }
+  .icon-amber { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
+  .icon-red { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); }
+  .icon-pink { background: rgba(236,72,153,0.1); border-color: rgba(236,72,153,0.2); }
+  .icon-cyan { background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.2); }
+
+  .section-title-group { flex: 1; }
+
+  .section-num {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover { border-color: rgba(0,212,255,0.3); box-shadow: var(--glow); }
+  .card:hover::before { opacity: 1; }
+
+  .card-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  .card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .badge-green { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .badge-amber { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: #060a0e;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-red { background: #ef4444; }
+  .dot-yellow { background: #f59e0b; }
+  .dot-green { background: #10b981; }
+
+  .code-filename { font-size: 11px; color: var(--muted); }
+
+  .code-copy {
+    font-size: 10px;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .code-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #a8b4c3;
+  }
+
+  .kw { color: #7c3aed; }
+  .str { color: #10b981; }
+  .cm { color: #3d5166; font-style: italic; }
+  .fn { color: #00d4ff; }
+  .num { color: #f59e0b; }
+  .var { color: #e2e8f0; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(30,45,61,0.5);
+    position: relative;
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content { flex: 1; }
+  .step-title { font-weight: 600; color: var(--text); margin-bottom: 6px; font-size: 13px; }
+  .step-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* INLINE CODE */
+  code {
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.15);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* ALERTS */
+  .alert {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-content { flex: 1; }
+  .alert-title { font-weight: 600; margin-bottom: 4px; }
+
+  .alert-info { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); color: var(--text); }
+  .alert-info .alert-title { color: var(--accent); }
+  .alert-warn { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); color: var(--text); }
+  .alert-warn .alert-title { color: var(--accent4); }
+  .alert-success { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); color: var(--text); }
+  .alert-success .alert-title { color: var(--accent3); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 10px; border: 1px solid var(--border); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--surface);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(30,45,61,0.5);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(0,212,255,0.02); }
+
+  /* VOICE SELECTOR */
+  .voice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .voice-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .voice-card:hover { border-color: rgba(0,212,255,0.3); }
+  .voice-card.recommended { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.05); }
+
+  .voice-name { font-weight: 700; color: var(--text); margin-bottom: 4px; font-size: 13px; }
+  .voice-id { font-size: 10px; color: var(--accent); margin-bottom: 8px; }
+  .voice-desc { font-size: 11px; color: var(--muted); }
+  .voice-rec { font-size: 10px; color: var(--accent3); margin-top: 6px; }
+
+  /* QUICK REF */
+  .quick-ref {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .quick-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .quick-card-header {
+    padding: 14px 20px;
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .quick-card-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+
+  .cmd-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .cmd-label { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .cmd-code {
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.12);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* SEPARATOR */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 32px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 40px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-text { font-size: 11px; color: var(--muted); }
+  .footer-accent { color: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .fade-in:nth-child(2) { animation-delay: 0.2s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.4s; }
+
+  .glow-text { color: var(--accent); text-shadow: 0 0 20px rgba(0,212,255,0.5); }
+
+  /* Blinking cursor */
+  .cursor::after {
+    content: '▋';
+    animation: blink 1s infinite;
+    color: var(--accent);
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* Top bar */
+  .topbar {
+    position: sticky;
+    top: 0;
+    background: rgba(7,10,15,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+
+  .topbar-path { font-size: 12px; color: var(--muted); }
+  .topbar-path span { color: var(--accent); }
+
+  .topbar-actions { display: flex; gap: 12px; }
+  .topbar-btn {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topbar-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  p { margin-bottom: 12px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--text); }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 24px 0 12px;
+  }
+
+  h3:first-child { margin-top: 0; }
+
+  ul { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  ul li { font-size: 12px; color: var(--muted); padding-left: 16px; position: relative; line-height: 1.7; }
+  ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">LOCAL AI</div>
+    <div class="logo-sub">System Documentation</div>
+  </div>
+
+  <div class="sidebar-status">
+    <div class="status-item"><div class="status-dot"></div> Ollama — Running</div>
+    <div class="status-item"><div class="status-dot"></div> Open WebUI — :8080</div>
+    <div class="status-item"><div class="status-dot"></div> SearXNG — :8888</div>
+    <div class="status-item"><div class="status-dot offline"></div> ComfyUI — Manual</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <a class="nav-item" href="#overview"><span class="nav-icon">⬡</span> System Overview</a>
+    <a class="nav-item" href="#quickref"><span class="nav-icon">⚡</span> Quick Reference</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Tools</div>
+    <a class="nav-item" href="#agents"><span class="nav-icon">🤖</span> AI Agents</a>
+    <a class="nav-item" href="#webui"><span class="nav-icon">🌐</span> Open WebUI</a>
+    <a class="nav-item" href="#searxng"><span class="nav-icon">🔍</span> SearXNG</a>
+    <a class="nav-item" href="#tts"><span class="nav-icon">🔊</span> Voice (TTS)</a>
+    <a class="nav-item" href="#comfyui"><span class="nav-icon">🎨</span> ComfyUI</a>
+    <a class="nav-item" href="#vscodium"><span class="nav-icon">💻</span> VSCodium</a>
+    <a class="nav-item" href="#aider"><span class="nav-icon">🛠</span> Aider</a>
+    <a class="nav-item" href="#files"><span class="nav-icon">📄</span> File Converter</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Usage</div>
+    <a class="nav-item" href="#when-to-use"><span class="nav-icon">🗺</span> When to Use What</a>
+    <a class="nav-item" href="#limits"><span class="nav-icon">📏</span> Context Limits</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Customization</div>
+    <a class="nav-item" href="#change-voice"><span class="nav-icon">🎙</span> Change Voice</a>
+    <a class="nav-item" href="#change-model"><span class="nav-icon">🧠</span> Swap Models</a>
+    <a class="nav-item" href="#models"><span class="nav-icon">📦</span> Model Reference</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-path">~/agents / <span>documentation</span></div>
+    <div class="topbar-actions">
+      <a class="topbar-btn" href="http://localhost:8080" target="_blank">⬡ WebUI</a>
+      <a class="topbar-btn" href="http://localhost:8888" target="_blank">🔍 Search</a>
+      <a class="topbar-btn" href="http://localhost:8188" target="_blank">🎨 ComfyUI</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">System Documentation v1.0</div>
+    <h1>
+      <div class="line1">Your Local</div>
+      <div class="line2">AI Stack<span class="cursor"></span></div>
+    </h1>
+    <p class="hero-desc">
+      A complete multi-agent AI system running entirely on your machine. No cloud, no subscriptions, no data leaving your device. Specialized models for coding, reasoning, search, voice, and image generation — all routed intelligently.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">AI Models</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Tools</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Cloud Deps</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Requests</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⬡</div>
+      <div class="section-title-group">
+        <div class="section-num">01 — Overview</div>
+        <div class="section-title">System Architecture</div>
+        <div class="section-subtitle">How everything fits together</div>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card fade-in">
+        <div class="card-label">Router</div>
+        <div class="card-title">qwen2.5:3b</div>
+        <div class="card-desc">Reads your input and decides which specialist to route to. Fast and lightweight — only 1.9GB.</div>
+        <div class="card-badge badge-blue">Always loads first</div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-label">Coding</div>
+        <div class="card-title">qwen2.5-coder:7b</div>
+        <div class="card-desc">Handles all code: writing, debugging, explaining, optimizing. Used in Aider and Continue.dev too.</div>
+        <div class="card-badge badge-purple">4.7GB VRAM</div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-label">Math & Reasoning</div>
+        <div class="card-title">deepseek-r1:7b</div>
+        <div class="card-desc">Distilled reasoning model. Step-by-step problem solving, logic, math. Punches above its weight.</div>
+        <div class="card-badge badge-amber">4.7GB VRAM</div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-label">General + Search</div>
+        <div class="card-title">llama3.2:3b</div>
+        <div class="card-desc">Fast general assistant. Handles writing, translation, summaries, and search result synthesis.</div>
+        <div class="card-badge badge-green">2.0GB VRAM</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">How routing works</div>
+        The router model reads your message and outputs one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>FILE</code>, or <code>GENERAL</code>. The right specialist model then loads and handles your request. Only one model is in VRAM at a time.
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK REF -->
+  <section class="section" id="quickref">
+    <div class="section-header">
+      <div class="section-icon icon-green">⚡</div>
+      <div class="section-title-group">
+        <div class="section-num">02 — Quick Reference</div>
+        <div class="section-title">Commands & URLs</div>
+        <div class="section-subtitle">Everything you need day-to-day</div>
+      </div>
+    </div>
+
+    <div class="quick-ref">
+      <div class="quick-card">
+        <div class="quick-card-header">🤖 AI Agents (Terminal)</div>
+        <div class="quick-card-body">
+          <div class="cmd-row"><span class="cmd-label">Start agents</span><span class="cmd-code">python ~/agents/main.py</span></div>
+          <div class="cmd-row"><span class="cmd-label">Text to speech</span><span class="cmd-code">tts hello world</span></div>
+          <div class="cmd-row"><span class="cmd-label">TTS with voice</span><span class="cmd-code">tts --voice george hi</span></div>
+          <div class="cmd-row"><span class="cmd-label">TTS help</span><span class="cmd-code">tts -h</span></div>
+          <div class="cmd-row"><span class="cmd-label">Exit agents</span><span class="cmd-code">exit</span></div>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <div class="quick-card-header">🌐 Web Interfaces</div>
+        <div class="quick-card-body">
+          <div class="cmd-row"><span class="cmd-label">Open WebUI</span><span class="cmd-code">webui</span></div>
+          <div class="cmd-row"><span class="cmd-label">SearXNG</span><span class="cmd-code">searxng</span></div>
+          <div class="cmd-row"><span class="cmd-label">ComfyUI</span><span class="cmd-code">comfyui</span></div>
+          <div class="cmd-row"><span class="cmd-label">WebUI URL</span><span class="cmd-code">localhost:8080</span></div>
+          <div class="cmd-row"><span class="cmd-label">ComfyUI URL</span><span class="cmd-code">localhost:8188</span></div>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <div class="quick-card-header">🛠 Coding Tools</div>
+        <div class="quick-card-body">
+          <div class="cmd-row"><span class="cmd-label">Start Aider</span><span class="cmd-code">aider</span></div>
+          <div class="cmd-row"><span class="cmd-label">Aider on file</span><span class="cmd-code">aider file.py</span></div>
+          <div class="cmd-row"><span class="cmd-label">Continue.dev</span><span class="cmd-code">Ctrl+L in VSCodium</span></div>
+          <div class="cmd-row"><span class="cmd-label">Autocomplete</span><span class="cmd-code">Tab in VSCodium</span></div>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <div class="quick-card-header">📦 Ollama Management</div>
+        <div class="quick-card-body">
+          <div class="cmd-row"><span class="cmd-label">List models</span><span class="cmd-code">ollama list</span></div>
+          <div class="cmd-row"><span class="cmd-label">Pull model</span><span class="cmd-code">ollama pull &lt;name&gt;</span></div>
+          <div class="cmd-row"><span class="cmd-label">Remove model</span><span class="cmd-code">ollama rm &lt;name&gt;</span></div>
+          <div class="cmd-row"><span class="cmd-label">Run model</span><span class="cmd-code">ollama run &lt;name&gt;</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI AGENTS -->
+  <section class="section" id="agents">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🤖</div>
+      <div class="section-title-group">
+        <div class="section-num">03 — AI Agents</div>
+        <div class="section-title">main.py — The Brain</div>
+        <div class="section-subtitle">Your terminal-based multi-agent system</div>
+      </div>
+    </div>
+
+    <p>The main agent system is your primary interface for quick tasks. It automatically routes your question to the right specialist model without you needing to think about it.</p>
+
+    <h3>How to use it</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Activate the venv and start</div>
+          <div class="step-desc">The agents alias handles this automatically. Just type <code>agents</code> or run directly.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Type your question naturally</div>
+          <div class="step-desc">No need to specify which agent. Ask anything — "write a Python function", "what is 15% of 340", "search for latest Node.js version".</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Watch the router decide</div>
+          <div class="step-desc">You'll see <code>[Router → CODE]</code> or similar, then the specialist responds. The loop continues — just keep asking.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Type <code>exit</code> to quit</div>
+          <div class="step-desc">Or Ctrl+C. The venv deactivates automatically.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — example session</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Start the system</span>
+python ~/agents/main.py
+
+🤖 <span class="str">Local AI ready. Type your question (or 'exit'):</span>
+
+You: <span class="fn">write a function to check if a number is prime</span>
+[Router → <span class="kw">CODE</span>]
+
+You: <span class="fn">search latest python version</span>
+[Router → <span class="kw">SEARCH</span>]
+[Searching...]
+
+You: <span class="fn">say hello this is a test</span>
+[Router → <span class="kw">TTS</span>]
+<span class="cm"># Audio plays through speakers</span>
+
+You: <span class="fn">exit</span></pre>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">First response is slow</div>
+        The router model needs to load into VRAM on first run (~2-4 seconds). Subsequent questions in the same session are faster.
+      </div>
+    </div>
+  </section>
+
+  <!-- OPEN WEBUI -->
+  <section class="section" id="webui">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🌐</div>
+      <div class="section-title-group">
+        <div class="section-num">04 — Open WebUI</div>
+        <div class="section-title">Browser Chat Interface</div>
+        <div class="section-subtitle">ChatGPT-like UI running fully local</div>
+      </div>
+    </div>
+
+    <p>Open WebUI gives you a polished chat interface in your browser. Unlike <code>main.py</code>, here you manually pick which model to use from a dropdown. Best for longer conversations and uploading images.</p>
+
+    <h3>How to use it</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Open it</div>
+          <div class="step-desc">Type <code>webui</code> in terminal or go to <code>http://localhost:8080</code>. It auto-starts on boot.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Select a model</div>
+          <div class="step-desc">Click the model dropdown at the top. Choose based on your task: <strong>qwen2.5-coder:7b</strong> for code, <strong>llava:7b</strong> for images, <strong>llama3.2:3b</strong> for general chat.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Upload images with llava</div>
+          <div class="step-desc">Select <strong>llava:7b</strong>, then click the paperclip icon to attach an image. Ask anything about it: "describe this", "what's in the background", "read the text".</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-success">
+      <div class="alert-icon">✓</div>
+      <div class="alert-content">
+        <div class="alert-title">Auto-starts on boot</div>
+        Open WebUI runs as a systemd service. No need to start it manually — it's always available at <code>localhost:8080</code>.
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARXNG -->
+  <section class="section" id="searxng">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔍</div>
+      <div class="section-title-group">
+        <div class="section-num">05 — SearXNG</div>
+        <div class="section-title">Private Search Engine</div>
+        <div class="section-subtitle">Anonymous web search + AI integration</div>
+      </div>
+    </div>
+
+    <p>SearXNG is a self-hosted search engine. It fetches results from Google, Bing, DuckDuckGo etc. without any of those services tracking you. It also powers the <code>SEARCH</code> route in your agent system.</p>
+
+    <h3>Two ways to use it</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Direct browsing</div>
+        <div class="card-title">Manual Search</div>
+        <div class="card-desc">Type <code>searxng</code> or go to <code>localhost:8888</code>. Use it like any search engine — completely private.</div>
+        <div class="card-badge badge-green">No tracking</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Via agents</div>
+        <div class="card-title">AI-Powered Search</div>
+        <div class="card-desc">In <code>main.py</code>, ask anything requiring current info. The SEARCH agent queries SearXNG and synthesizes an answer.</div>
+        <div class="card-badge badge-blue">Auto-routed</div>
+      </div>
+    </div>
+
+    <div class="alert alert-success">
+      <div class="alert-icon">✓</div>
+      <div class="alert-content">
+        <div class="alert-title">Auto-starts via Docker</div>
+        SearXNG runs in a Docker container with <code>restart: always</code>. It starts automatically with Docker on boot.
+      </div>
+    </div>
+  </section>
+
+  <!-- TTS -->
+  <section class="section" id="tts">
+    <div class="section-header">
+      <div class="section-icon icon-amber">🔊</div>
+      <div class="section-title-group">
+        <div class="section-num">06 — Voice (TTS)</div>
+        <div class="section-title">Kokoro Text-to-Speech</div>
+        <div class="section-subtitle">82M parameter local voice synthesis</div>
+      </div>
+    </div>
+
+    <p>Kokoro is a lightweight TTS model that runs entirely on your CPU. No VRAM used. The default voice is <strong>am_fenrir</strong> — American male, natural and warm.</p>
+
+    <h3>Usage</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — tts usage</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Basic usage (default voice)</span>
+tts hello this is a test
+
+<span class="cm"># Specify a voice</span>
+tts --voice george good morning
+
+<span class="cm"># Specify language</span>
+tts --lang fr bonjour comment ça va
+
+<span class="cm"># Adjust speed (default 1.2)</span>
+tts --speed 1.4 this is faster
+
+<span class="cm"># Show help</span>
+tts -h
+
+<span class="cm"># Interactive mode (no text argument)</span>
+tts
+<span class="str">Text to speak: </span> type here and press enter</pre>
+    </div>
+
+    <h3>Available Languages</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Flag</th><th>Language</th><th>Code</th></tr></thead>
+        <tbody>
+          <tr><td>🇺🇸</td><td>English (American)</td><td><code>en</code></td></tr>
+          <tr><td>🇬🇧</td><td>English (British)</td><td><code>en-gb</code></td></tr>
+          <tr><td>🇫🇷</td><td>French</td><td><code>fr</code></td></tr>
+          <tr><td>🇯🇵</td><td>Japanese</td><td><code>ja</code></td></tr>
+          <tr><td>🇰🇷</td><td>Korean</td><td><code>ko</code></td></tr>
+          <tr><td>🇨🇳</td><td>Chinese (Mandarin)</td><td><code>zh</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- COMFYUI -->
+  <section class="section" id="comfyui">
+    <div class="section-header">
+      <div class="section-icon icon-pink">🎨</div>
+      <div class="section-title-group">
+        <div class="section-num">07 — ComfyUI</div>
+        <div class="section-title">Image Generation</div>
+        <div class="section-subtitle">Stable Diffusion XL Turbo on your 4060</div>
+      </div>
+    </div>
+
+    <p>ComfyUI is a node-based image generation interface. Your loaded model is <strong>SDXL-Turbo</strong> — optimized for speed, generates 1024×1024 images in a few seconds on your RTX 4060.</p>
+
+    <h3>How to generate an image</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Start ComfyUI</div>
+          <div class="step-desc">Type <code>comfyui</code> in terminal. It opens <code>localhost:8188</code> in your browser automatically.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Load your workflow</div>
+          <div class="step-desc">Click <strong>Graph → Open file</strong> and select <code>~/agents/sdxl_workflow.json</code>. This loads the pre-configured SDXL-Turbo workflow.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Edit the prompt</div>
+          <div class="step-desc">Find the <strong>CLIP Text Encode (Positive)</strong> node and type your description. Find the negative node to add what you don't want.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Click Run</div>
+          <div class="step-desc">The image generates and appears on the <strong>Save Image</strong> node. It's also saved to <code>~/ComfyUI/output/</code> as PNG.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Best resolution for your GPU</div>
+        Stick to <strong>1024×1024</strong> for best quality. Maximum safe resolution is around <strong>1280×1280</strong>. Going higher may cause out-of-memory errors on your 8GB VRAM.
+      </div>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">Manual start only</div>
+        ComfyUI is not set to auto-start — it uses VRAM when running and would conflict with your AI models. Start it only when you need to generate images.
+      </div>
+    </div>
+
+    <h3>Prompt tips for SDXL-Turbo</h3>
+    <ul>
+      <li>Be descriptive: <em>"a cyberpunk city at night, neon lights, rain, photorealistic, 8k"</em></li>
+      <li>Add style: <em>"oil painting", "anime style", "watercolor", "cinematic lighting"</em></li>
+      <li>Negative prompt: always add <em>"blurry, low quality, ugly, distorted, deformed"</em></li>
+      <li>SDXL-Turbo works best with 1-4 steps (it's a turbo model, not standard diffusion)</li>
+    </ul>
+  </section>
+
+  <!-- VSCODIUM -->
+  <section class="section" id="vscodium">
+    <div class="section-header">
+      <div class="section-icon icon-blue">💻</div>
+      <div class="section-title-group">
+        <div class="section-num">08 — VSCodium</div>
+        <div class="section-title">Continue.dev Integration</div>
+        <div class="section-subtitle">Local Copilot in your editor</div>
+      </div>
+    </div>
+
+    <p>Continue.dev is installed as a VSCodium extension. It gives you AI-powered autocomplete and an in-editor chat panel, both running locally via Ollama.</p>
+
+    <h3>Features</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Autocomplete</div>
+        <div class="card-title">Tab Completion</div>
+        <div class="card-desc">As you type, qwen2.5-coder:7b suggests completions. Press Tab to accept. Works like GitHub Copilot.</div>
+        <div class="card-badge badge-blue">Auto-active</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Chat</div>
+        <div class="card-title">Inline AI Chat</div>
+        <div class="card-desc">Press <strong>Ctrl+L</strong> to open the chat panel. Ask questions about your code, request refactors, explain functions.</div>
+        <div class="card-badge badge-purple">Ctrl+L</div>
+      </div>
+    </div>
+
+    <h3>Config location</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">~/.continue/config.json</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre>{
+  <span class="str">"models"</span>: [
+    {
+      <span class="str">"title"</span>: <span class="str">"Coder (qwen2.5-coder 7b)"</span>,
+      <span class="str">"provider"</span>: <span class="str">"ollama"</span>,
+      <span class="str">"model"</span>: <span class="str">"qwen2.5-coder:7b"</span>
+    },
+    {
+      <span class="str">"title"</span>: <span class="str">"General (llama3.2 3b)"</span>,
+      <span class="str">"provider"</span>: <span class="str">"ollama"</span>,
+      <span class="str">"model"</span>: <span class="str">"llama3.2:3b"</span>
+    }
+  ],
+  <span class="str">"tabAutocompleteModel"</span>: {
+    <span class="str">"title"</span>: <span class="str">"Autocomplete"</span>,
+    <span class="str">"provider"</span>: <span class="str">"ollama"</span>,
+    <span class="str">"model"</span>: <span class="str">"qwen2.5-coder:7b"</span>
+  }
+}</pre>
+    </div>
+  </section>
+
+  <!-- AIDER -->
+  <section class="section" id="aider">
+    <div class="section-header">
+      <div class="section-icon icon-cyan">🛠</div>
+      <div class="section-title-group">
+        <div class="section-num">09 — Aider</div>
+        <div class="section-title">Terminal Coding Assistant</div>
+        <div class="section-subtitle">AI that edits your actual files</div>
+      </div>
+    </div>
+
+    <p>Aider is the most powerful coding tool in your stack. Unlike Continue.dev (suggestions) or <code>main.py</code> (answers), Aider reads your entire codebase and directly edits files based on your instructions.</p>
+
+    <h3>How to use it</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Navigate to your project</div>
+          <div class="step-desc"><code>cd ~/your-project-folder</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Start aider</div>
+          <div class="step-desc">Type <code>aider</code> — it loads using qwen2.5-coder:7b automatically from your config.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Add files to context</div>
+          <div class="step-desc">Type <code>/add filename.py</code> to give aider access to specific files. Or <code>/add *.py</code> for all Python files.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Give instructions naturally</div>
+          <div class="step-desc">"Add error handling to the main function", "Refactor this to use async/await", "Fix the bug in line 42".</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Aider vs Continue.dev — when to use each</div>
+        Use <strong>Continue.dev</strong> while actively writing code (autocomplete, quick questions). Use <strong>Aider</strong> for bigger tasks: refactoring, adding features, fixing complex bugs — things that touch multiple files.
+      </div>
+    </div>
+  </section>
+
+  <!-- FILE CONVERTER -->
+  <section class="section" id="files">
+    <div class="section-header">
+      <div class="section-icon icon-amber">📄</div>
+      <div class="section-title-group">
+        <div class="section-num">10 — File Converter</div>
+        <div class="section-title">Pandoc Integration</div>
+        <div class="section-subtitle">Convert documents via AI or direct command</div>
+      </div>
+    </div>
+
+    <p>File conversion is handled by <strong>Pandoc</strong>, triggered automatically when the router detects a FILE request, or you can use it directly.</p>
+
+    <h3>Via agents (automatic)</h3>
+    <p>In <code>main.py</code>, just describe what you want to convert. The router will detect FILE and prompt you for the source and target:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — file conversion via agent</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre>You: <span class="fn">convert my document to pdf</span>
+[Router → <span class="kw">FILE</span>]
+[FILE] Source file path:
+Source: <span class="str">/home/ilyes/docs/report.docx</span>
+Target format: <span class="str">pdf</span>
+[FILE] Done → /home/ilyes/docs/report.pdf</pre>
+    </div>
+
+    <h3>Direct Pandoc command</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — pandoc direct</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># docx → pdf</span>
+pandoc input.docx -o output.pdf
+
+<span class="cm"># markdown → html</span>
+pandoc README.md -o README.html
+
+<span class="cm"># html → docx</span>
+pandoc page.html -o doc.docx
+
+<span class="cm"># txt → pdf</span>
+pandoc notes.txt -o notes.pdf</pre>
+    </div>
+
+    <h3>Supported formats</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>From</th><th>To</th></tr></thead>
+        <tbody>
+          <tr><td><code>.docx</code>, <code>.odt</code></td><td><code>.pdf</code>, <code>.html</code>, <code>.md</code>, <code>.txt</code></td></tr>
+          <tr><td><code>.md</code>, <code>.rst</code></td><td><code>.pdf</code>, <code>.docx</code>, <code>.html</code></td></tr>
+          <tr><td><code>.html</code></td><td><code>.pdf</code>, <code>.docx</code>, <code>.md</code></td></tr>
+          <tr><td><code>.txt</code></td><td><code>.pdf</code>, <code>.docx</code>, <code>.html</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- WHEN TO USE -->
+  <section class="section" id="when-to-use">
+    <div class="section-header">
+      <div class="section-icon icon-cyan">🗺</div>
+      <div class="section-title-group">
+        <div class="section-num">11 — Usage Guide</div>
+        <div class="section-title">When to Use What</div>
+        <div class="section-subtitle">Pick the right tool for the job</div>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Daily driver</div>
+        <div class="card-title">🤖 Local AI (main.py)</div>
+        <div class="card-desc">Your go-to for quick tasks. Auto-routes to the right model — no need to think about which one to use.</div>
+        <div class="card-badge badge-blue">Best for most things</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Long conversations</div>
+        <div class="card-title">🌐 Open WebUI</div>
+        <div class="card-desc">When you want a proper chat UI, need to upload images, or want to pick a model manually. Conversations are saved.</div>
+        <div class="card-badge badge-purple">Browser at :8080</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Working on a project</div>
+        <div class="card-title">🛠 Aider</div>
+        <div class="card-desc">When you're inside a codebase and need AI to actually edit your files. Refactoring, adding features, fixing bugs across multiple files.</div>
+        <div class="card-badge badge-green">Run in project folder</div>
+      </div>
+      <div class="card">
+        <div class="card-label">While coding</div>
+        <div class="card-title">💻 Continue.dev</div>
+        <div class="card-desc">Never leave VSCodium. Tab autocomplete as you type, Ctrl+L for inline chat. Quick questions about code you're looking at.</div>
+        <div class="card-badge badge-amber">Ctrl+L in VSCodium</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Need an image</div>
+        <div class="card-title">🎨 ComfyUI</div>
+        <div class="card-desc">Only when generating or editing images. Start it, generate what you need, then close it — it uses VRAM that your AI models need.</div>
+        <div class="card-badge badge-blue">Manual start only</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Private browsing</div>
+        <div class="card-title">🔍 SearXNG</div>
+        <div class="card-desc">When you want to search the web without Google tracking you. Also powers the SEARCH agent in main.py automatically.</div>
+        <div class="card-badge badge-green">Browser at :8888</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Audio output</div>
+        <div class="card-title">🔊 TTS</div>
+        <div class="card-desc">Whenever you want text read aloud. Long articles, notes, anything. Runs on CPU — zero VRAM cost.</div>
+        <div class="card-badge badge-amber">tts your text here</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Document conversion</div>
+        <div class="card-title">📄 File Converter</div>
+        <div class="card-desc">Converting between document formats. Via main.py ("convert my doc to pdf") or direct pandoc command in terminal.</div>
+        <div class="card-badge badge-purple">Via agents or pandoc</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Decision flowchart</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">?</div>
+        <div class="step-content">
+          <div class="step-title">Is VSCodium open and am I actively writing code?</div>
+          <div class="step-desc">→ Use <strong>Continue.dev</strong> (Tab autocomplete) or <strong>Aider</strong> if the task touches multiple files.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">?</div>
+        <div class="step-content">
+          <div class="step-title">Do I need a quick answer, search, math, or TTS?</div>
+          <div class="step-desc">→ Use <strong>Local AI</strong> (main.py). It handles routing automatically.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">?</div>
+        <div class="step-content">
+          <div class="step-title">Do I want a proper chat interface or need to upload an image?</div>
+          <div class="step-desc">→ Use <strong>Open WebUI</strong>. Select llava:7b for images, any other model for chat.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">?</div>
+        <div class="step-content">
+          <div class="step-title">Do I need to generate an image?</div>
+          <div class="step-desc">→ Use <strong>ComfyUI</strong>. Close your AI agents first if possible to free VRAM.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">?</div>
+        <div class="step-content">
+          <div class="step-title">Do I want to search privately without AI?</div>
+          <div class="step-desc">→ Use <strong>SearXNG</strong> directly at localhost:8888.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Don't run ComfyUI and AI agents at the same time</div>
+        ComfyUI uses ~6GB VRAM and your AI models use 2-4.5GB each. Running both simultaneously will cause out-of-memory errors on your 8GB card.
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTEXT LIMITS -->
+  <section class="section" id="limits">
+    <div class="section-header">
+      <div class="section-icon icon-red">📏</div>
+      <div class="section-title-group">
+        <div class="section-num">12 — Limits</div>
+        <div class="section-title">Context & Processing Limits</div>
+        <div class="section-subtitle">How much each tool can handle at once</div>
+      </div>
+    </div>
+
+    <p>Every AI model has a <strong>context window</strong> — the maximum amount of text it can read and reason about at once. Think of it as working memory. Once you exceed it, the model starts forgetting earlier parts of the conversation or file.</p>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Tokens vs lines of code</div>
+        Models measure context in tokens, not lines. Roughly: <strong>1 line of code ≈ 10-20 tokens</strong>, <strong>1 page of text ≈ 500 tokens</strong>, <strong>1,000 tokens ≈ 750 words</strong>.
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Model</th>
+            <th>Context Window</th>
+            <th>≈ Lines of Code</th>
+            <th>≈ Pages of Text</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Local AI / main.py</strong></td>
+            <td><code>qwen2.5:3b</code> (router)</td>
+            <td>32K tokens</td>
+            <td>~1,600</td>
+            <td>~64</td>
+            <td>Only classifies your input, not your files</td>
+          </tr>
+          <tr>
+            <td><strong>Local AI — CODE</strong></td>
+            <td><code>qwen2.5-coder:7b</code></td>
+            <td>32K tokens*</td>
+            <td>~1,600</td>
+            <td>~64</td>
+            <td>*Ollama default. Max possible is 128K</td>
+          </tr>
+          <tr>
+            <td><strong>Local AI — MATH</strong></td>
+            <td><code>deepseek-r1:7b</code></td>
+            <td>32K tokens</td>
+            <td>~1,600</td>
+            <td>~64</td>
+            <td>Best for self-contained problems</td>
+          </tr>
+          <tr>
+            <td><strong>Local AI — GENERAL</strong></td>
+            <td><code>llama3.2:3b</code></td>
+            <td>128K tokens</td>
+            <td>~6,400</td>
+            <td>~256</td>
+            <td>Largest context in your stack</td>
+          </tr>
+          <tr>
+            <td><strong>Open WebUI</strong></td>
+            <td>Depends on selected model</td>
+            <td>32K–128K</td>
+            <td>~1,600–6,400</td>
+            <td>~64–256</td>
+            <td>Same models, same limits. History counts toward context</td>
+          </tr>
+          <tr>
+            <td><strong>Aider</strong></td>
+            <td><code>qwen2.5-coder:7b</code></td>
+            <td>32K tokens*</td>
+            <td>~1,600</td>
+            <td>~64</td>
+            <td>Smarter about what it loads — only adds relevant files</td>
+          </tr>
+          <tr>
+            <td><strong>Continue.dev (chat)</strong></td>
+            <td><code>qwen2.5-coder:7b</code></td>
+            <td>32K tokens*</td>
+            <td>~1,600</td>
+            <td>~64</td>
+            <td>Includes open file + conversation history</td>
+          </tr>
+          <tr>
+            <td><strong>Continue.dev (autocomplete)</strong></td>
+            <td><code>qwen2.5-coder:7b</code></td>
+            <td>~1,024 tokens</td>
+            <td>~50</td>
+            <td>~2</td>
+            <td>Only looks at immediate surrounding code</td>
+          </tr>
+          <tr>
+            <td><strong>TTS</strong></td>
+            <td>Kokoro (82M)</td>
+            <td>No hard limit</td>
+            <td>—</td>
+            <td>~Any length</td>
+            <td>Processes text in chunks — just gets slower with long text</td>
+          </tr>
+          <tr>
+            <td><strong>ComfyUI</strong></td>
+            <td>SDXL-Turbo</td>
+            <td>77 tokens (prompt)</td>
+            <td>—</td>
+            <td>~half a page</td>
+            <td>Image prompts should be concise — long prompts get truncated</td>
+          </tr>
+          <tr>
+            <td><strong>File Converter (Pandoc)</strong></td>
+            <td>No AI — direct conversion</td>
+            <td>Unlimited</td>
+            <td>Any size</td>
+            <td>Any size</td>
+            <td>No context limit — converts entire files regardless of size</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>What happens when you hit the limit?</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">In chat (main.py / WebUI)</div>
+        <div class="card-title">Oldest messages forgotten</div>
+        <div class="card-desc">The model silently drops the earliest messages in the conversation to fit new input. It won't warn you — answers may become inconsistent.</div>
+        <div class="card-badge badge-amber">Start fresh conversation</div>
+      </div>
+      <div class="card">
+        <div class="card-label">In Aider</div>
+        <div class="card-title">Files get truncated</div>
+        <div class="card-desc">If you add too many files, Aider warns you and may truncate some. Use /add selectively — only add files relevant to the current task.</div>
+        <div class="card-badge badge-blue">Add fewer files</div>
+      </div>
+      <div class="card">
+        <div class="card-label">In ComfyUI</div>
+        <div class="card-title">Prompt gets cut off</div>
+        <div class="card-desc">SDXL clips prompts at 77 tokens silently. Keep image prompts concise — quality keywords beat long sentences.</div>
+        <div class="card-badge badge-purple">Keep prompts short</div>
+      </div>
+    </div>
+
+    <h3>How to increase context in Ollama (advanced)</h3>
+    <p>Ollama defaults to 32K tokens for most models. You can increase it by setting the context size when running a model, but it uses more VRAM:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — increase context window</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Run model with larger context (uses more VRAM)</span>
+OLLAMA_NUM_CTX=65536 ollama run qwen2.5-coder:7b
+
+<span class="cm"># Or set it permanently in ~/.ollama/config</span>
+<span class="cm"># Note: going above 32K may cause OOM on your 8GB card</span></pre>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">VRAM warning for large contexts</div>
+        Doubling the context window roughly doubles the VRAM needed for the KV cache. On your 8GB card, going above 32K tokens with a 7B model may cause out-of-memory errors. Stick to 32K unless you have a specific need.
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANGE VOICE -->
+  <section class="section" id="change-voice">
+    <div class="section-header">
+      <div class="section-icon icon-amber">🎙</div>
+      <div class="section-title-group">
+        <div class="section-num">13 — Customization</div>
+        <div class="section-title">Changing the Default Voice</div>
+        <div class="section-subtitle">Step-by-step guide</div>
+      </div>
+    </div>
+
+    <p>The current default voice is <strong>am_fenrir</strong>. To change it permanently, edit <code>~/agents/tts.py</code>.</p>
+
+    <h3>Available male voices</h3>
+    <div class="voice-grid">
+      <div class="voice-card recommended">
+        <div class="voice-name">Fenrir</div>
+        <div class="voice-id">am_fenrir</div>
+        <div class="voice-desc">American, warm and natural. Current default.</div>
+        <div class="voice-rec">★ Current default</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">Onyx</div>
+        <div class="voice-id">am_onyx</div>
+        <div class="voice-desc">American, deep and authoritative.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">George</div>
+        <div class="voice-id">bm_george</div>
+        <div class="voice-desc">British, closest to Jarvis/professional.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">Lewis</div>
+        <div class="voice-id">bm_lewis</div>
+        <div class="voice-desc">British, smooth and refined.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">Daniel</div>
+        <div class="voice-id">bm_daniel</div>
+        <div class="voice-desc">British, clear and articulate.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">Eric</div>
+        <div class="voice-id">am_eric</div>
+        <div class="voice-desc">American, calm and measured.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">Michael</div>
+        <div class="voice-id">am_michael</div>
+        <div class="voice-desc">American, friendly and clear.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-name">Adam</div>
+        <div class="voice-id">am_adam</div>
+        <div class="voice-desc">American, energetic and expressive.</div>
+      </div>
+    </div>
+
+    <h3>How to change the default permanently</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Open the TTS script</div>
+          <div class="step-desc"><code>nano ~/agents/tts.py</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Find the default voice line</div>
+          <div class="step-desc">Look for <code>voice = "am_fenrir"</code> in the <code>parse_args</code> function.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Change the value</div>
+          <div class="step-desc">Replace <code>am_fenrir</code> with any voice ID from the table above. Example: <code>voice = "bm_george"</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Also change the language default if needed</div>
+          <div class="step-desc">For British voices, change <code>lang = "en-us"</code> to <code>lang = "en-gb"</code> on the line below.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Save and test</div>
+          <div class="step-desc"><code>Ctrl+X → Y → Enter</code> to save. Then <code>tts hello</code> to test.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">~/agents/tts.py — change these two lines</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="kw">def</span> <span class="fn">parse_args</span>(args):
+    <span class="cm"># ... other code ...</span>
+    voice = <span class="str">"am_fenrir"</span>   <span class="cm"># ← change this to any voice ID</span>
+    lang  = <span class="str">"en-us"</span>      <span class="cm"># ← change to "en-gb" for British voices</span>
+    speed = <span class="num">1.2</span>          <span class="cm"># ← adjust speed (1.0 = normal)</span></pre>
+    </div>
+  </section>
+
+  <!-- CHANGE MODEL -->
+  <section class="section" id="change-model">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🧠</div>
+      <div class="section-title-group">
+        <div class="section-num">14 — Customization</div>
+        <div class="section-title">Swapping AI Models</div>
+        <div class="section-subtitle">How to change which model handles which task</div>
+      </div>
+    </div>
+
+    <h3>Swap a model in main.py</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Pull the new model first</div>
+          <div class="step-desc"><code>ollama pull newmodel:size</code> — wait for download to finish.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Open main.py</div>
+          <div class="step-desc"><code>nano ~/agents/main.py</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Find the models section at the top</div>
+          <div class="step-desc">Look for the <code># ── Models ──</code> comment block with the LLM definitions.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Change the model name</div>
+          <div class="step-desc">Replace the model string. Example: change <code>"ollama/qwen2.5-coder:7b"</code> to <code>"ollama/codellama:7b"</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">~/agents/main.py — models section</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># ── Models ──────────────────────────────────────────────</span>
+router_llm  = <span class="fn">LLM</span>(model=<span class="str">"ollama/qwen2.5:3b"</span>,         ...)  <span class="cm"># router</span>
+coder_llm   = <span class="fn">LLM</span>(model=<span class="str">"ollama/qwen2.5-coder:7b"</span>,   ...)  <span class="cm"># coding</span>
+math_llm    = <span class="fn">LLM</span>(model=<span class="str">"ollama/deepseek-r1:7b"</span>,     ...)  <span class="cm"># math</span>
+general_llm = <span class="fn">LLM</span>(model=<span class="str">"ollama/llama3.2:3b"</span>,        ...)  <span class="cm"># general</span></pre>
+    </div>
+
+    <h3>Swap Aider's model</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">~/.aider.conf.yml</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="var">model</span>: <span class="str">ollama/qwen2.5-coder:7b</span>   <span class="cm"># ← change this</span>
+<span class="var">ollama-api-base</span>: <span class="str">http://localhost:11434</span></pre>
+    </div>
+
+    <h3>Swap Continue.dev models</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">~/.continue/config.json</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre>{
+  <span class="str">"models"</span>: [{
+    <span class="str">"model"</span>: <span class="str">"qwen2.5-coder:7b"</span>  <span class="cm">// ← change this</span>
+  }],
+  <span class="str">"tabAutocompleteModel"</span>: {
+    <span class="str">"model"</span>: <span class="str">"qwen2.5-coder:7b"</span>  <span class="cm">// ← and this</span>
+  }
+}</pre>
+    </div>
+  </section>
+
+  <!-- MODEL REFERENCE -->
+  <section class="section" id="models">
+    <div class="section-header">
+      <div class="section-icon icon-green">📦</div>
+      <div class="section-title-group">
+        <div class="section-num">15 — Reference</div>
+        <div class="section-title">Installed Models</div>
+        <div class="section-subtitle">Full overview of your model stack</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Size</th>
+            <th>VRAM</th>
+            <th>Role</th>
+            <th>Used by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>qwen2.5:3b</code></td>
+            <td>1.9 GB</td>
+            <td>~2 GB</td>
+            <td>Router / general</td>
+            <td>main.py router</td>
+          </tr>
+          <tr>
+            <td><code>qwen2.5-coder:7b</code></td>
+            <td>4.7 GB</td>
+            <td>~4.5 GB</td>
+            <td>Code generation</td>
+            <td>main.py, Aider, Continue.dev</td>
+          </tr>
+          <tr>
+            <td><code>deepseek-r1:7b</code></td>
+            <td>4.7 GB</td>
+            <td>~4.5 GB</td>
+            <td>Math & reasoning</td>
+            <td>main.py math agent</td>
+          </tr>
+          <tr>
+            <td><code>llama3.2:3b</code></td>
+            <td>2.0 GB</td>
+            <td>~2 GB</td>
+            <td>General + search</td>
+            <td>main.py, WebUI</td>
+          </tr>
+          <tr>
+            <td><code>llava:7b</code></td>
+            <td>4.7 GB</td>
+            <td>~4.5 GB</td>
+            <td>Image understanding</td>
+            <td>WebUI only</td>
+          </tr>
+          <tr>
+            <td><code>kokoro-onnx</code></td>
+            <td>~300 MB</td>
+            <td>0 (CPU)</td>
+            <td>Text to speech</td>
+            <td>tts command, main.py</td>
+          </tr>
+          <tr>
+            <td><code>sdxl-turbo</code></td>
+            <td>6.0 GB</td>
+            <td>~6 GB</td>
+            <td>Image generation</td>
+            <td>ComfyUI</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Only one model loads at a time</div>
+        Ollama automatically swaps models in and out of VRAM. You never need to manually unload anything. ComfyUI uses separate VRAM — don't run it while using the AI agents.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-text">LOCAL AI STACK — <span class="footer-accent">CachyOS / Hyprland</span> — RTX 4060 8GB</div>
+    <div class="footer-text">Built with ❤ — 100% offline, 100% yours</div>
+  </div>
+
+</main>
+
+<script>
+  // Copy button functionality
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.style.color = 'var(--accent3)';
+      btn.style.borderColor = 'var(--accent3)';
+      setTimeout(() => {
+        btn.textContent = 'copy';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    });
+  }
+
+  // Active nav highlighting
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(item => item.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Stagger animations on scroll
+  const cards = document.querySelectorAll('.card');
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = `${i * 0.05}s`;
+        entry.target.style.animation = 'fadeIn 0.4s ease both';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(c => cardObserver.observe(c));
+</script>
+</body>
+</html>
