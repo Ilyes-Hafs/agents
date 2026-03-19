@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOCAL AI — System Guide</title>
+<title>Local AI Stack — by Ilyes Hafs</title>
+<meta name="description" content="A complete self-hosted multi-agent AI system. No cloud, no subscriptions. Coding, reasoning, search, voice, and image generation — all local.">
+<meta name="author" content="Ilyes Hafs">
+<meta property="og:title" content="Local AI Stack — by Ilyes Hafs">
+<meta property="og:description" content="A complete self-hosted multi-agent AI system running entirely on your hardware. No cloud dependencies.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Local AI Stack — by Ilyes Hafs">
+<meta name="twitter:description" content="Self-hosted multi-agent AI: coding, reasoning, search, voice, image generation. All local, all private.">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -714,7 +722,7 @@
 <nav class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-text">LOCAL AI</div>
-    <div class="logo-sub">System Documentation</div>
+    <div class="logo-sub">by Ilyes Hafs</div>
   </div>
 
   <div class="sidebar-status">
@@ -740,6 +748,7 @@
     <a class="nav-item" href="#vscodium"><span class="nav-icon">💻</span> VSCodium</a>
     <a class="nav-item" href="#aider"><span class="nav-icon">🛠</span> Aider</a>
     <a class="nav-item" href="#files"><span class="nav-icon">📄</span> File Converter</a>
+    <a class="nav-item" href="#github"><span class="nav-icon">🐙</span> GitHub & Git</a>
   </div>
 
   <div class="nav-section">
@@ -754,6 +763,13 @@
     <a class="nav-item" href="#change-model"><span class="nav-icon">🧠</span> Swap Models</a>
     <a class="nav-item" href="#models"><span class="nav-icon">📦</span> Model Reference</a>
   </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Troubleshooting</div>
+    <a class="nav-item" href="#troubleshoot"><span class="nav-icon">🔧</span> Common Problems</a>
+    <a class="nav-item" href="#sysreq"><span class="nav-icon">⚙</span> System Requirements</a>
+    <a class="nav-item" href="#future"><span class="nav-icon">🚀</span> Future Tools</a>
+  </div>
 </nav>
 
 <!-- MAIN -->
@@ -761,8 +777,9 @@
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-path">~/agents / <span>documentation</span></div>
+    <div class="topbar-path">Local AI Stack / <span>by Ilyes Hafs</span></div>
     <div class="topbar-actions">
+      <a class="topbar-btn" href="https://github.com/Ilyes-Hafs/agents" target="_blank">🐙 GitHub</a>
       <a class="topbar-btn" href="http://localhost:8080" target="_blank">⬡ WebUI</a>
       <a class="topbar-btn" href="http://localhost:8888" target="_blank">🔍 Search</a>
       <a class="topbar-btn" href="http://localhost:8188" target="_blank">🎨 ComfyUI</a>
@@ -771,21 +788,21 @@
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-tag">System Documentation v1.0</div>
+    <div class="hero-tag">by Ilyes Hafs — github.com/Ilyes-Hafs/agents</div>
     <h1>
-      <div class="line1">Your Local</div>
-      <div class="line2">AI Stack<span class="cursor"></span></div>
+      <div class="line1">Local AI</div>
+      <div class="line2">Stack<span class="cursor"></span></div>
     </h1>
     <p class="hero-desc">
-      A complete multi-agent AI system running entirely on your machine. No cloud, no subscriptions, no data leaving your device. Specialized models for coding, reasoning, search, voice, and image generation — all routed intelligently.
+      A complete self-hosted multi-agent AI system running entirely on your hardware. No cloud dependencies, no subscriptions, no data leaving your machine. Specialized models for coding, reasoning, search, voice, and image generation — intelligently routed through a unified terminal interface.
     </p>
     <div class="hero-stats">
       <div class="stat">
-        <div class="stat-num">5</div>
+        <div class="stat-num">6</div>
         <div class="stat-label">AI Models</div>
       </div>
       <div class="stat">
-        <div class="stat-num">8</div>
+        <div class="stat-num">10</div>
         <div class="stat-label">Tools</div>
       </div>
       <div class="stat">
@@ -814,34 +831,40 @@
       <div class="card fade-in">
         <div class="card-label">Router</div>
         <div class="card-title">qwen2.5:3b</div>
-        <div class="card-desc">Reads your input and decides which specialist to route to. Fast and lightweight — only 1.9GB.</div>
+        <div class="card-desc">The dispatcher. Reads every incoming message and classifies it into a category with a single word. Lightweight and fast — designed to load instantly and stay out of the way.</div>
         <div class="card-badge badge-blue">Always loads first</div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-label">Prompt Engineer</div>
+        <div class="card-title">llama3.2:3b</div>
+        <div class="card-desc">Automatically rewrites short or vague inputs into clear, detailed prompts before routing. Only activates on messages under 10 words — longer inputs pass through unchanged.</div>
+        <div class="card-badge badge-green">Auto on short inputs</div>
       </div>
       <div class="card fade-in">
         <div class="card-label">Coding</div>
         <div class="card-title">qwen2.5-coder:7b</div>
-        <div class="card-desc">Handles all code: writing, debugging, explaining, optimizing. Used in Aider and Continue.dev too.</div>
-        <div class="card-badge badge-purple">4.7GB VRAM</div>
+        <div class="card-desc">A code-specialized model trained on a large corpus of programming languages. Writes, debugs, explains, and refactors code across Python, JS, C, Rust, shell scripts, and more.</div>
+        <div class="card-badge badge-purple">4.7 GB</div>
       </div>
       <div class="card fade-in">
         <div class="card-label">Math & Reasoning</div>
         <div class="card-title">deepseek-r1:7b</div>
-        <div class="card-desc">Distilled reasoning model. Step-by-step problem solving, logic, math. Punches above its weight.</div>
-        <div class="card-badge badge-amber">4.7GB VRAM</div>
+        <div class="card-desc">A distilled reasoning model that thinks step-by-step before answering. Excels at math problems, logic puzzles, and multi-step analysis. Shows its reasoning chain explicitly.</div>
+        <div class="card-badge badge-amber">4.7 GB</div>
       </div>
       <div class="card fade-in">
         <div class="card-label">General + Search</div>
         <div class="card-title">llama3.2:3b</div>
-        <div class="card-desc">Fast general assistant. Handles writing, translation, summaries, and search result synthesis.</div>
-        <div class="card-badge badge-green">2.0GB VRAM</div>
+        <div class="card-desc">A fast, capable general-purpose assistant. Handles writing, translation, summarization, synthesizing web search results, and powering the prompt improver.</div>
+        <div class="card-badge badge-green">2.0 GB</div>
       </div>
     </div>
 
     <div class="alert alert-info">
       <div class="alert-icon">ℹ</div>
       <div class="alert-content">
-        <div class="alert-title">How routing works</div>
-        The router model reads your message and outputs one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>FILE</code>, or <code>GENERAL</code>. The right specialist model then loads and handles your request. Only one model is in VRAM at a time.
+        <div class="alert-title">The three-stage pipeline</div>
+        Every message goes through up to three stages: <strong>(1)</strong> the Prompt Improver rewrites short inputs into better prompts, <strong>(2)</strong> the Router classifies the improved message into one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>FILE</code>, <code>AIDER</code>, or <code>GENERAL</code>, and <strong>(3)</strong> the appropriate specialist model loads and handles the request. Only one model occupies VRAM at a time.
       </div>
     </div>
   </section>
@@ -909,48 +932,71 @@
       <div class="section-title-group">
         <div class="section-num">03 — AI Agents</div>
         <div class="section-title">main.py — The Brain</div>
-        <div class="section-subtitle">Your terminal-based multi-agent system</div>
+        <div class="section-subtitle">Terminal-based multi-agent system with automatic prompt improvement</div>
       </div>
     </div>
 
-    <p>The main agent system is your primary interface for quick tasks. It automatically routes your question to the right specialist model without you needing to think about it.</p>
+    <p>The main agent system is the primary terminal interface for all AI tasks. It uses a three-stage pipeline: your input is first <strong>improved by a prompt engineer</strong>, then <strong>classified by the router</strong>, then handled by the <strong>appropriate specialist model</strong>. Built with <a href="https://docs.crewai.com" target="_blank" style="color:var(--accent)">CrewAI</a> and <a href="https://ollama.com/library" target="_blank" style="color:var(--accent)">Ollama</a>.</p>
+
+    <h3>The pipeline</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Stage 1</div>
+        <div class="card-title">🪄 Prompt Improver</div>
+        <div class="card-desc">If your message is under 10 words, <strong>llama3.2:3b</strong> automatically rewrites it into a clearer, more detailed prompt before anything else runs. You see the improved version printed as <code>[PROMPT] →</code>.</div>
+        <div class="card-badge badge-green">Auto on short inputs</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Stage 2</div>
+        <div class="card-title">🔀 Router</div>
+        <div class="card-desc"><strong>qwen2.5:3b</strong> reads the (possibly improved) message and outputs one word to select the right specialist: CODE, MATH, SEARCH, TTS, FILE, AIDER, or GENERAL.</div>
+        <div class="card-badge badge-blue">Always runs</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Stage 3</div>
+        <div class="card-title">🎯 Specialist</div>
+        <div class="card-desc">The appropriate model handles the request — coder for code, reasoning model for math, search-augmented general for current info, or one of the tool agents for file/TTS/aider tasks.</div>
+        <div class="card-badge badge-purple">Specialist loads on demand</div>
+      </div>
+    </div>
 
     <h3>How to use it</h3>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-content">
-          <div class="step-title">Activate the venv and start</div>
-          <div class="step-desc">The agents alias handles this automatically. Just type <code>agents</code> or run directly.</div>
+          <div class="step-title">Activate the virtual environment and start</div>
+          <div class="step-desc">Run <code>source ~/.venvs/agents/bin/activate.fish</code> then <code>python ~/agents/main.py</code>. The <code>agents</code> shell alias handles both steps automatically.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-content">
-          <div class="step-title">Type your question naturally</div>
-          <div class="step-desc">No need to specify which agent. Ask anything — "write a Python function", "what is 15% of 340", "search for latest Node.js version".</div>
+          <div class="step-title">Ask anything naturally</div>
+          <div class="step-desc">No need to craft perfect prompts or specify which model to use. Short vague inputs get improved automatically. Detailed inputs pass through unchanged.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-content">
-          <div class="step-title">Watch the router decide</div>
-          <div class="step-desc">You'll see <code>[Router → CODE]</code> or similar, then the specialist responds. The loop continues — just keep asking.</div>
+          <div class="step-title">Watch the pipeline labels</div>
+          <div class="step-desc">You'll see <code>[PROMPT] →</code> if your input was improved, then <code>[Router → CATEGORY]</code> showing which specialist handled it.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
         <div class="step-content">
           <div class="step-title">Type <code>exit</code> to quit</div>
-          <div class="step-desc">Or Ctrl+C. The venv deactivates automatically.</div>
+          <div class="step-desc">Or press Ctrl+C. The session ends and the virtual environment deactivates.</div>
         </div>
       </div>
     </div>
 
+    <h3>Example session</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
-        <span class="code-filename">terminal — example session</span>
+        <span class="code-filename">terminal — example session with prompt improver</span>
         <button class="code-copy" onclick="copyCode(this)">copy</button>
       </div>
       <pre><span class="cm"># Start the system</span>
@@ -958,25 +1004,39 @@ python ~/agents/main.py
 
 🤖 <span class="str">Local AI ready. Type your question (or 'exit'):</span>
 
-You: <span class="fn">write a function to check if a number is prime</span>
+<span class="cm"># Short input — prompter activates automatically</span>
+You: <span class="fn">explain recursion</span>
+[PROMPT] → <span class="str">Provide a clear explanation of recursion in programming,
+           including how it works, a simple Python example, and
+           common pitfalls like missing base cases.</span>
 [Router → <span class="kw">CODE</span>]
 
-You: <span class="fn">search latest python version</span>
+<span class="cm"># Detailed input — prompter skips, passes through unchanged</span>
+You: <span class="fn">write a Python function that reads a CSV file and returns the mean of a specific column</span>
+[Router → <span class="kw">CODE</span>]
+
+<span class="cm"># Search with short input — prompter improves then searches</span>
+You: <span class="fn">latest python version</span>
+[PROMPT] → <span class="str">What is the latest stable release version of Python as of today?</span>
 [Router → <span class="kw">SEARCH</span>]
 [Searching...]
 
-You: <span class="fn">say hello this is a test</span>
-[Router → <span class="kw">TTS</span>]
-<span class="cm"># Audio plays through speakers</span>
-
 You: <span class="fn">exit</span></pre>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Prompt improver threshold</div>
+        The prompter only activates on messages under 10 words. This avoids slowing down requests where you already provided enough detail. The threshold can be adjusted in <code>main.py</code> by changing the word count check in <code>maybe_improve_prompt()</code>.
+      </div>
     </div>
 
     <div class="alert alert-warn">
       <div class="alert-icon">⚠</div>
       <div class="alert-content">
-        <div class="alert-title">First response is slow</div>
-        The router model needs to load into VRAM on first run (~2-4 seconds). Subsequent questions in the same session are faster.
+        <div class="alert-title">First response is slower</div>
+        On first run, the router model takes 2–4 seconds to load into VRAM. If the prompter also triggers, expect an additional 1–2 seconds. Subsequent questions in the same session are faster.
       </div>
     </div>
   </section>
@@ -992,38 +1052,81 @@ You: <span class="fn">exit</span></pre>
       </div>
     </div>
 
-    <p>Open WebUI gives you a polished chat interface in your browser. Unlike <code>main.py</code>, here you manually pick which model to use from a dropdown. Best for longer conversations and uploading images.</p>
+    <p>Open WebUI is a self-hosted browser interface for interacting with Ollama models. It provides a polished ChatGPT-style experience with persistent conversation history, model switching, image uploads, and web search integration. Unlike <code>main.py</code>, there is no automatic routing — you manually select the model for each conversation. <a href="https://docs.openwebui.com" target="_blank" style="color:var(--accent)">→ Open WebUI docs</a></p>
+
+    <h3>Key differences from main.py</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Use WebUI when</div>
+        <div class="card-title">Long conversations</div>
+        <div class="card-desc">WebUI saves full conversation history that persists between sessions. You can return to any previous chat. main.py starts fresh every time.</div>
+        <div class="card-badge badge-blue">Persistent history</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Use WebUI when</div>
+        <div class="card-title">Image analysis</div>
+        <div class="card-desc">Select <strong>llava:7b</strong> and attach any image via the paperclip icon. Ask questions about the image content, text in the image, or request a description.</div>
+        <div class="card-badge badge-purple">llava:7b required</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Use WebUI when</div>
+        <div class="card-title">Manual model selection</div>
+        <div class="card-desc">Pick exactly which model to use from the dropdown. Useful for comparing responses between models or when you know which specialist you need.</div>
+        <div class="card-badge badge-amber">Model dropdown</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Web search</div>
+        <div class="card-title">SearXNG Integration</div>
+        <div class="card-desc">Enable the 🌐 globe icon next to the message input to activate web search for that message. Queries SearXNG at <code>localhost:8888</code> and feeds results to the model.</div>
+        <div class="card-badge badge-green">Toggle per message</div>
+      </div>
+    </div>
 
     <h3>How to use it</h3>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-content">
-          <div class="step-title">Open it</div>
-          <div class="step-desc">Type <code>webui</code> in terminal or go to <code>http://localhost:8080</code>. It auto-starts on boot.</div>
+          <div class="step-title">Open the interface</div>
+          <div class="step-desc">Type <code>webui</code> in terminal or navigate to <code>http://localhost:8080</code>. Open WebUI starts automatically on system boot.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-content">
-          <div class="step-title">Select a model</div>
-          <div class="step-desc">Click the model dropdown at the top. Choose based on your task: <strong>qwen2.5-coder:7b</strong> for code, <strong>llava:7b</strong> for images, <strong>llama3.2:3b</strong> for general chat.</div>
+          <div class="step-title">Select the right model</div>
+          <div class="step-desc">Use the model dropdown at the top: <strong>qwen2.5-coder:7b</strong> for code, <strong>llava:7b</strong> for images, <strong>llama3.2:3b</strong> for general chat and search synthesis.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-content">
-          <div class="step-title">Upload images with llava</div>
-          <div class="step-desc">Select <strong>llava:7b</strong>, then click the paperclip icon to attach an image. Ask anything about it: "describe this", "what's in the background", "read the text".</div>
+          <div class="step-title">Enable web search when needed</div>
+          <div class="step-desc">Click the <strong>⚙ tools icon</strong> near the message input, then toggle web search on. This activates SearXNG for that message to get current information.</div>
         </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Upload images with llava</div>
+          <div class="step-desc">Switch to <strong>llava:7b</strong>, click the <strong>+</strong> button, and select an image file. The model will analyze it and answer questions about its content.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Web search is off by default per message</div>
+        Web search must be manually toggled on for each message using the tools icon. It does not activate automatically based on your question. For automatic search routing, use <code>main.py</code> which handles this via the SEARCH agent.
       </div>
     </div>
 
     <div class="alert alert-success">
       <div class="alert-icon">✓</div>
       <div class="alert-content">
-        <div class="alert-title">Auto-starts on boot</div>
-        Open WebUI runs as a systemd service. No need to start it manually — it's always available at <code>localhost:8080</code>.
+        <div class="alert-title">Starts automatically on boot</div>
+        Open WebUI runs as a background process and is always available at <code>localhost:8080</code> without any manual startup required.
       </div>
     </div>
   </section>
@@ -1039,21 +1142,35 @@ You: <span class="fn">exit</span></pre>
       </div>
     </div>
 
-    <p>SearXNG is a self-hosted search engine. It fetches results from Google, Bing, DuckDuckGo etc. without any of those services tracking you. It also powers the <code>SEARCH</code> route in your agent system.</p>
+    <p>SearXNG is a self-hosted, privacy-respecting meta search engine. Rather than querying Google directly (which tracks your searches), SearXNG acts as a proxy — it fetches results from Google, Bing, DuckDuckGo, and dozens of other sources simultaneously, then returns them to you with no tracking, no ads, and no profiling. It also serves as the data source for the <code>SEARCH</code> agent in <code>main.py</code> and the web search feature in Open WebUI. <a href="https://docs.searxng.org" target="_blank" style="color:var(--accent)">→ SearXNG docs</a></p>
 
-    <h3>Two ways to use it</h3>
+    <h3>Three ways to use it</h3>
     <div class="card-grid">
       <div class="card">
-        <div class="card-label">Direct browsing</div>
+        <div class="card-label">Direct browser</div>
         <div class="card-title">Manual Search</div>
-        <div class="card-desc">Type <code>searxng</code> or go to <code>localhost:8888</code>. Use it like any search engine — completely private.</div>
-        <div class="card-badge badge-green">No tracking</div>
+        <div class="card-desc">Navigate to <code>localhost:8888</code> and use it like any search engine. Results come from multiple engines simultaneously with no tracking whatsoever.</div>
+        <div class="card-badge badge-green">localhost:8888</div>
       </div>
       <div class="card">
-        <div class="card-label">Via agents</div>
-        <div class="card-title">AI-Powered Search</div>
-        <div class="card-desc">In <code>main.py</code>, ask anything requiring current info. The SEARCH agent queries SearXNG and synthesizes an answer.</div>
+        <div class="card-label">Via main.py</div>
+        <div class="card-title">AI-Synthesized Search</div>
+        <div class="card-desc">Ask time-sensitive questions in <code>main.py</code>. The SEARCH route queries SearXNG, retrieves the top results, and feeds them to <strong>llama3.2:3b</strong> which synthesizes a coherent answer.</div>
         <div class="card-badge badge-blue">Auto-routed</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Via Open WebUI</div>
+        <div class="card-title">Browser-Based AI Search</div>
+        <div class="card-desc">Toggle the 🌐 web search icon in WebUI before sending a message. WebUI queries SearXNG and augments the model's response with live results.</div>
+        <div class="card-badge badge-amber">Toggle per message</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">When to use search vs when not to</div>
+        Use search for anything time-sensitive: current news, software versions, prices, recent events, live sports scores, weather. Do not use search for timeless knowledge: programming concepts, math, definitions, history — the local models already know these and search would only slow things down.
       </div>
     </div>
 
@@ -1061,7 +1178,7 @@ You: <span class="fn">exit</span></pre>
       <div class="alert-icon">✓</div>
       <div class="alert-content">
         <div class="alert-title">Auto-starts via Docker</div>
-        SearXNG runs in a Docker container with <code>restart: always</code>. It starts automatically with Docker on boot.
+        SearXNG runs in a Docker container configured with <code>restart: always</code>. It starts automatically when Docker starts on boot and requires no manual intervention.
       </div>
     </div>
   </section>
@@ -1077,7 +1194,7 @@ You: <span class="fn">exit</span></pre>
       </div>
     </div>
 
-    <p>Kokoro is a lightweight TTS model that runs entirely on your CPU. No VRAM used. The default voice is <strong>am_fenrir</strong> — American male, natural and warm.</p>
+    <p>Kokoro is an open-source text-to-speech model with 82 million parameters. It runs entirely on CPU using ONNX Runtime — no GPU or VRAM required. Despite its small size it produces natural, expressive speech with multiple voices and language support. It is integrated into both the standalone <code>tts</code> command and the <code>TTS</code> route in <code>main.py</code>. <a href="https://github.com/thewh1teagle/kokoro-onnx" target="_blank" style="color:var(--accent)">→ kokoro-onnx GitHub</a></p>
 
     <h3>Usage</h3>
     <div class="code-block">
@@ -1133,7 +1250,131 @@ tts
       </div>
     </div>
 
-    <p>ComfyUI is a node-based image generation interface. Your loaded model is <strong>SDXL-Turbo</strong> — optimized for speed, generates 1024×1024 images in a few seconds on your RTX 4060.</p>
+    <p>ComfyUI is a <strong>node-based</strong> image generation interface for Stable Diffusion. Instead of a simple form, it exposes the entire image generation pipeline as a visual graph — boxes (nodes) connected by wires (edges). Each node does one job: load a model, encode your text, sample noise, decode pixels. Your loaded model is <strong>SDXL-Turbo</strong> — optimized for speed, generates 1024×1024 images in a few seconds on your RTX 4060. <a href="https://github.com/comfyanonymous/ComfyUI" target="_blank" style="color:var(--accent)">→ ComfyUI GitHub</a></p>
+
+    <h3>How nodes work</h3>
+    <p>Think of it like a factory assembly line. Raw materials (your text prompt, a model) go in one end, a finished image comes out the other. Each station (node) transforms the data in one specific way and passes it to the next via colored connection wires.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Purple wires</div>
+        <div class="card-title">Model data</div>
+        <div class="card-desc">Carries the loaded checkpoint model between nodes. Starts at <strong>Load Checkpoint</strong> and flows into KSampler.</div>
+        <div class="card-badge badge-purple">MODEL</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Yellow wires</div>
+        <div class="card-title">Conditioning</div>
+        <div class="card-desc">Carries your encoded text prompt. Flows from <strong>CLIP Text Encode</strong> nodes into KSampler as positive/negative guidance.</div>
+        <div class="card-badge badge-amber">CONDITIONING</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Blue wires</div>
+        <div class="card-title">Latent image</div>
+        <div class="card-desc">Carries the compressed latent representation of the image. Flows from <strong>Empty Latent Image</strong> → KSampler → VAE Decode.</div>
+        <div class="card-badge badge-blue">LATENT</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Green wires</div>
+        <div class="card-title">Pixel image</div>
+        <div class="card-desc">Carries the final decoded pixel image. Flows from <strong>VAE Decode</strong> → Save Image. This is what you see.</div>
+        <div class="card-badge badge-green">IMAGE</div>
+      </div>
+    </div>
+
+    <h3>The standard SDXL node pipeline</h3>
+    <p>Your <code>sdxl_workflow.json</code> contains exactly these nodes wired together:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Node</th><th>What it does</th><th>Key settings</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>Load Checkpoint</code></td>
+            <td>Loads the SDXL-Turbo model file from disk into VRAM</td>
+            <td>ckpt_name: your model file</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>CLIP Text Encode (Positive)</code></td>
+            <td>Converts your text prompt into numbers the model understands</td>
+            <td><strong>text</strong>: your description here</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>CLIP Text Encode (Negative)</code></td>
+            <td>Tells the model what to avoid in the image</td>
+            <td><strong>text</strong>: blurry, ugly, deformed...</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>Empty Latent Image</code></td>
+            <td>Creates a blank canvas of the right size in latent space</td>
+            <td>width: 1024, height: 1024, batch: 1</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>KSampler</code></td>
+            <td>The core — iteratively denoises the latent using your prompt as guidance</td>
+            <td>steps: 1-4, cfg: 1.0, sampler: euler_a</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>VAE Decode</code></td>
+            <td>Converts the latent image back into actual pixels</td>
+            <td>Automatic — no settings to change</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><code>Save Image</code></td>
+            <td>Saves the final PNG to <code>~/ComfyUI/output/</code> and shows it in the UI</td>
+            <td>filename_prefix: your prefix</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>KSampler settings explained</h3>
+    <p>The KSampler is the most important node — it controls how the image is generated. <a href="https://comfyui-wiki.com/tutorial/basic/comfyui-sampler-and-scheduler-overview" target="_blank" style="color:var(--accent)">→ Sampler guide</a></p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>What it does</th><th>For SDXL-Turbo</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>steps</code></td>
+            <td>How many denoising iterations to run. More = slower but more refined.</td>
+            <td><strong>1–4</strong> (turbo is designed for very low steps)</td>
+          </tr>
+          <tr>
+            <td><code>cfg</code> (CFG Scale)</td>
+            <td>How strictly to follow your prompt. Higher = more literal, less creative.</td>
+            <td><strong>1.0</strong> (SDXL-Turbo uses distillation, high CFG breaks it)</td>
+          </tr>
+          <tr>
+            <td><code>sampler_name</code></td>
+            <td>The algorithm used for denoising.</td>
+            <td><strong>euler_a</strong> or <strong>dpm_adaptive</strong></td>
+          </tr>
+          <tr>
+            <td><code>scheduler</code></td>
+            <td>Controls the noise schedule across steps.</td>
+            <td><strong>karras</strong> or <strong>normal</strong></td>
+          </tr>
+          <tr>
+            <td><code>denoise</code></td>
+            <td>How much of the image to regenerate. 1.0 = full generation from noise.</td>
+            <td><strong>1.0</strong> for new images, lower for img2img</td>
+          </tr>
+          <tr>
+            <td><code>seed</code></td>
+            <td>Random seed. Same seed + same prompt = same image.</td>
+            <td>Use -1 for random, or fix a seed to reproduce results</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <h3>How to generate an image</h3>
     <div class="steps">
@@ -1141,29 +1382,107 @@ tts
         <div class="step-num">1</div>
         <div class="step-content">
           <div class="step-title">Start ComfyUI</div>
-          <div class="step-desc">Type <code>comfyui</code> in terminal. It opens <code>localhost:8188</code> in your browser automatically.</div>
+          <div class="step-desc">Type <code>comfyui</code> in terminal. It opens <code>localhost:8188</code> in your browser automatically. Close AI agents first to free VRAM.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-content">
           <div class="step-title">Load your workflow</div>
-          <div class="step-desc">Click <strong>Graph → Open file</strong> and select <code>~/agents/sdxl_workflow.json</code>. This loads the pre-configured SDXL-Turbo workflow.</div>
+          <div class="step-desc">Click <strong>Load</strong> (or drag and drop) <code>~/agents/sdxl_workflow.json</code> onto the canvas. The node graph appears.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-content">
-          <div class="step-title">Edit the prompt</div>
-          <div class="step-desc">Find the <strong>CLIP Text Encode (Positive)</strong> node and type your description. Find the negative node to add what you don't want.</div>
+          <div class="step-title">Edit the positive prompt</div>
+          <div class="step-desc">Click the <strong>CLIP Text Encode (Positive)</strong> node and type your description in the text box. Be specific and descriptive.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
         <div class="step-content">
-          <div class="step-title">Click Run</div>
-          <div class="step-desc">The image generates and appears on the <strong>Save Image</strong> node. It's also saved to <code>~/ComfyUI/output/</code> as PNG.</div>
+          <div class="step-title">Edit the negative prompt</div>
+          <div class="step-desc">Click the <strong>CLIP Text Encode (Negative)</strong> node. Add things to avoid: <code>blurry, low quality, ugly, distorted, deformed, watermark</code>.</div>
         </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Click Queue Prompt</div>
+          <div class="step-desc">Press <strong>Queue Prompt</strong> (or Ctrl+Enter). Watch the progress bar on the KSampler node. Image appears on Save Image node when done.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Find your image</div>
+          <div class="step-desc">Right-click the Save Image node → <strong>Open in folder</strong>, or find it directly at <code>~/ComfyUI/output/</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Navigating the canvas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Action</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td>Pan the canvas</td><td>Middle mouse button drag, or Space + drag</td></tr>
+          <tr><td>Zoom in/out</td><td>Scroll wheel</td></tr>
+          <tr><td>Select a node</td><td>Left click</td></tr>
+          <tr><td>Move a node</td><td>Left click + drag</td></tr>
+          <tr><td>Select multiple</td><td>Ctrl + click or drag a selection box</td></tr>
+          <tr><td>Add a node</td><td>Right click on empty canvas → Add Node</td></tr>
+          <tr><td>Delete a node</td><td>Select it, press Delete</td></tr>
+          <tr><td>Connect nodes</td><td>Drag from an output dot to an input dot</td></tr>
+          <tr><td>Disconnect a wire</td><td>Right click the wire → Remove</td></tr>
+          <tr><td>Run the workflow</td><td>Ctrl+Enter or Queue Prompt button</td></tr>
+          <tr><td>Fit all nodes to screen</td><td>Ctrl+Shift+F or double-click empty canvas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Prompt writing tips for SDXL-Turbo</h3>
+    <p><a href="https://stable-diffusion-art.com/sdxl-prompts/" target="_blank" style="color:var(--accent)">→ SDXL prompt guide</a></p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">prompt examples</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Good positive prompt structure:</span>
+<span class="str">[subject], [setting], [lighting], [style], [quality tags]</span>
+
+<span class="cm"># Example — photorealistic portrait:</span>
+a young woman with auburn hair, sitting in a cafe, golden hour lighting,
+bokeh background, photorealistic, 8k, sharp focus, cinematic
+
+<span class="cm"># Example — landscape:</span>
+misty mountain valley at dawn, pine forest, purple sky, volumetric fog,
+epic scenery, landscape photography, ultra detailed
+
+<span class="cm"># Example — artwork style:</span>
+a knight in enchanted forest, oil painting style, dramatic lighting,
+fantasy art, intricate details, vibrant colors
+
+<span class="cm"># Standard negative prompt (always use this):</span>
+blurry, low quality, ugly, distorted, deformed, watermark, text,
+extra limbs, bad anatomy, jpeg artifacts, noise, overexposed</pre>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">SDXL-Turbo quirks</div>
+        SDXL-Turbo is a distilled model — it was trained to generate good images in 1–4 steps instead of the usual 20–50. Because of this: keep <strong>CFG at 1.0</strong> (not the usual 7), use <strong>euler_a sampler</strong>, and don't go above 4 steps or quality actually decreases.
+      </div>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">Manual start only — VRAM conflict</div>
+        ComfyUI uses ~6GB VRAM when running. Your AI models need 2–4.5GB each. Running both simultaneously will cause out-of-memory errors on your 8GB card. Always close your agents session before starting ComfyUI.
       </div>
     </div>
 
@@ -1171,24 +1490,16 @@ tts
       <div class="alert-icon">ℹ</div>
       <div class="alert-content">
         <div class="alert-title">Best resolution for your GPU</div>
-        Stick to <strong>1024×1024</strong> for best quality. Maximum safe resolution is around <strong>1280×1280</strong>. Going higher may cause out-of-memory errors on your 8GB VRAM.
+        Stick to <strong>1024×1024</strong>. Maximum safe resolution is ~<strong>1280×1280</strong>. Going higher risks OOM errors on 8GB VRAM. Change resolution in the <strong>Empty Latent Image</strong> node.
       </div>
     </div>
 
-    <div class="alert alert-warn">
-      <div class="alert-icon">⚠</div>
-      <div class="alert-content">
-        <div class="alert-title">Manual start only</div>
-        ComfyUI is not set to auto-start — it uses VRAM when running and would conflict with your AI models. Start it only when you need to generate images.
-      </div>
-    </div>
-
-    <h3>Prompt tips for SDXL-Turbo</h3>
+    <h3>Learn more</h3>
     <ul>
-      <li>Be descriptive: <em>"a cyberpunk city at night, neon lights, rain, photorealistic, 8k"</em></li>
-      <li>Add style: <em>"oil painting", "anime style", "watercolor", "cinematic lighting"</em></li>
-      <li>Negative prompt: always add <em>"blurry, low quality, ugly, distorted, deformed"</em></li>
-      <li>SDXL-Turbo works best with 1-4 steps (it's a turbo model, not standard diffusion)</li>
+      <li><a href="https://comfyui-wiki.com/tutorial/basic/comfyui-for-beginners" target="_blank" style="color:var(--accent)">ComfyUI for Beginners — official wiki</a></li>
+      <li><a href="https://civitai.com/models" target="_blank" style="color:var(--accent)">CivitAI — download more models and LoRAs</a></li>
+      <li><a href="https://comfyworkflows.com/" target="_blank" style="color:var(--accent)">ComfyWorkflows — community workflow library</a></li>
+      <li><a href="https://stable-diffusion-art.com/how-stable-diffusion-work/" target="_blank" style="color:var(--accent)">How Stable Diffusion works (illustrated guide)</a></li>
     </ul>
   </section>
 
@@ -1261,7 +1572,23 @@ tts
       </div>
     </div>
 
-    <p>Aider is the most powerful coding tool in your stack. Unlike Continue.dev (suggestions) or <code>main.py</code> (answers), Aider reads your entire codebase and directly edits files based on your instructions.</p>
+    <p>Aider is the most powerful coding tool in your stack. Unlike Continue.dev (suggestions) or <code>main.py</code> (answers), Aider reads your entire codebase and directly edits files based on your instructions. It lives in its own venv at <code>~/.venvs/aider/</code> to avoid dependency conflicts.</p>
+
+    <h3>Two ways to launch</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Via agents (auto-routed)</div>
+        <div class="card-title">From main.py</div>
+        <div class="card-desc">Say "I want to work on my project" or "refactor my agents" — the router detects AIDER and launches it automatically.</div>
+        <div class="card-badge badge-blue">Auto-routed</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Direct launch</div>
+        <div class="card-title">From terminal</div>
+        <div class="card-desc">Navigate to your project folder and type <code>aider</code>. Uses qwen2.5-coder:7b from <code>~/.aider.conf.yml</code>.</div>
+        <div class="card-badge badge-purple">cd ~/project && aider</div>
+      </div>
+    </div>
 
     <h3>How to use it</h3>
     <div class="steps">
@@ -1293,7 +1620,75 @@ tts
           <div class="step-desc">"Add error handling to the main function", "Refactor this to use async/await", "Fix the bug in line 42".</div>
         </div>
       </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Exit when done</div>
+          <div class="step-desc">Type <code>/exit</code> to quit. If launched from main.py, you'll return to the agent loop automatically.</div>
+        </div>
+      </div>
     </div>
+
+    <h3>All / commands</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>/add</code></td><td>Add files to chat so aider can edit them</td></tr>
+          <tr><td><code>/drop</code></td><td>Remove files from context to free up tokens</td></tr>
+          <tr><td><code>/diff</code></td><td>Show what aider changed since last message</td></tr>
+          <tr><td><code>/undo</code></td><td>Undo the last git commit made by aider</td></tr>
+          <tr><td><code>/git</code></td><td>Run any git command (e.g. <code>/git push</code>)</td></tr>
+          <tr><td><code>/ask</code></td><td>Ask questions without editing any files</td></tr>
+          <tr><td><code>/code</code></td><td>Switch to code editing mode</td></tr>
+          <tr><td><code>/clear</code></td><td>Clear chat history to free up context</td></tr>
+          <tr><td><code>/tokens</code></td><td>Check how much context you've used</td></tr>
+          <tr><td><code>/ls</code></td><td>List all files in the repo</td></tr>
+          <tr><td><code>/map</code></td><td>Print the current repository map</td></tr>
+          <tr><td><code>/web</code></td><td>Scrape a webpage and use it as context</td></tr>
+          <tr><td><code>/commit</code></td><td>Commit changes made outside the chat</td></tr>
+          <tr><td><code>/lint</code></td><td>Lint and fix files in chat</td></tr>
+          <tr><td><code>/model</code></td><td>Switch to a different model</td></tr>
+          <tr><td><code>/paste</code></td><td>Paste image/text from clipboard</td></tr>
+          <tr><td><code>/run</code></td><td>Run a shell command (alias: !)</td></tr>
+          <tr><td><code>/reset</code></td><td>Drop all files and clear history</td></tr>
+          <tr><td><code>/exit</code></td><td>Exit aider</td></tr>
+          <tr><td><code>/help</code></td><td>Show all commands</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Using git inside aider</h3>
+    <p>Aider auto-commits every change it makes. You can also run git commands directly inside aider using <code>/git</code> or <code>!</code>:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">aider — git commands</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Push to GitHub</span>
+/git push
+
+<span class="cm"># Pull latest changes</span>
+/git pull origin master
+
+<span class="cm"># Check status</span>
+/git status
+
+<span class="cm"># Undo last aider commit</span>
+/undo
+
+<span class="cm"># Run any shell command</span>
+!ls
+!python main.py</pre>
+    </div>
+
+    <h3>Learn more</h3>
+    <ul>
+      <li><a href="https://aider.chat/docs/usage/tutorials.html" target="_blank" style="color:var(--accent)">Aider official tutorials</a></li>
+      <li><a href="https://aider.chat/docs/config/aider_conf.html" target="_blank" style="color:var(--accent)">Aider config file reference</a></li>
+      <li><a href="https://aider.chat/docs/llms/ollama.html" target="_blank" style="color:var(--accent)">Using Aider with Ollama</a></li>
+    </ul>
 
     <div class="alert alert-info">
       <div class="alert-icon">ℹ</div>
@@ -1302,35 +1697,84 @@ tts
         Use <strong>Continue.dev</strong> while actively writing code (autocomplete, quick questions). Use <strong>Aider</strong> for bigger tasks: refactoring, adding features, fixing complex bugs — things that touch multiple files.
       </div>
     </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">Aider runs in its own venv</div>
+        Aider is installed at <code>~/.venvs/aider/</code> separately from your agents venv. This prevents numpy/kokoro conflicts. The <code>aider</code> alias in fish points to the correct binary automatically.
+      </div>
+    </div>
   </section>
+
 
   <!-- FILE CONVERTER -->
   <section class="section" id="files">
     <div class="section-header">
       <div class="section-icon icon-amber">📄</div>
       <div class="section-title-group">
-        <div class="section-num">10 — File Converter</div>
-        <div class="section-title">Pandoc Integration</div>
-        <div class="section-subtitle">Convert documents via AI or direct command</div>
+        <div class="section-num">10 — File Agent</div>
+        <div class="section-title">Create & Convert Files</div>
+        <div class="section-subtitle">Pandoc-powered file creation and conversion</div>
       </div>
     </div>
 
-    <p>File conversion is handled by <strong>Pandoc</strong>, triggered automatically when the router detects a FILE request, or you can use it directly.</p>
+    <p>The FILE agent handles two modes: <strong>Convert</strong> existing files between formats, or <strong>Create</strong> new files from scratch with optional AI-generated content. Triggered automatically when the router detects a FILE request.</p>
 
-    <h3>Via agents (automatic)</h3>
-    <p>In <code>main.py</code>, just describe what you want to convert. The router will detect FILE and prompt you for the source and target:</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Convert mode</div>
+        <div class="card-title">Format Conversion</div>
+        <div class="card-desc">Triggered by words like "convert", "export", "save as". Asks for source path and target format, runs pandoc.</div>
+        <div class="card-badge badge-amber">convert / export / save as</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Create mode</div>
+        <div class="card-title">File Creation</div>
+        <div class="card-desc">Triggered by "create a file", "make a file", "write a file". Asks for filename, folder, and whether to generate content with AI.</div>
+        <div class="card-badge badge-blue">create / make / write a file</div>
+      </div>
+    </div>
+
+    <h3>Convert mode example</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
-        <span class="code-filename">terminal — file conversion via agent</span>
+        <span class="code-filename">terminal — convert mode</span>
         <button class="code-copy" onclick="copyCode(this)">copy</button>
       </div>
       <pre>You: <span class="fn">convert my document to pdf</span>
 [Router → <span class="kw">FILE</span>]
-[FILE] Source file path:
-Source: <span class="str">/home/ilyes/docs/report.docx</span>
-Target format: <span class="str">pdf</span>
-[FILE] Done → /home/ilyes/docs/report.pdf</pre>
+[FILE] Convert mode
+Source file path: <span class="str">/home/user/docs/report.docx</span>
+Target format (pdf/docx/txt/html/md): <span class="str">pdf</span>
+[FILE] Done → /home/user/docs/report.pdf</pre>
+    </div>
+
+    <h3>Create mode example</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — create mode</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre>You: <span class="fn">create a file</span>
+[Router → <span class="kw">FILE</span>]
+[FILE] Create mode
+Filename: <span class="str">hello.asm</span>
+Save to folder (default ~/Documents): <span class="str">~/Documents</span>
+Generate content with AI? (y/n): <span class="str">y</span>
+Describe what the file should contain: <span class="str">MIPS hello world program</span>
+[FILE] Created → /home/user/Documents/hello.asm
+Also convert to another format? (pdf/docx/leave blank): </pre>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">AI content generation routing</div>
+        When generating content with AI, code files (<code>.py</code>, <code>.js</code>, <code>.sh</code>, <code>.c</code>, etc.) are routed to <strong>qwen2.5-coder:7b</strong>. Text files (<code>.md</code>, <code>.txt</code>, <code>.html</code>) go to <strong>llama3.2:3b</strong>.
+      </div>
     </div>
 
     <h3>Direct Pandoc command</h3>
@@ -1340,8 +1784,8 @@ Target format: <span class="str">pdf</span>
         <span class="code-filename">terminal — pandoc direct</span>
         <button class="code-copy" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="cm"># docx → pdf</span>
-pandoc input.docx -o output.pdf
+      <pre><span class="cm"># docx → pdf (xelatex engine required)</span>
+pandoc input.docx -o output.pdf --pdf-engine=xelatex
 
 <span class="cm"># markdown → html</span>
 pandoc README.md -o README.html
@@ -1350,7 +1794,7 @@ pandoc README.md -o README.html
 pandoc page.html -o doc.docx
 
 <span class="cm"># txt → pdf</span>
-pandoc notes.txt -o notes.pdf</pre>
+pandoc notes.txt -o notes.pdf --pdf-engine=xelatex</pre>
     </div>
 
     <h3>Supported formats</h3>
@@ -1366,6 +1810,7 @@ pandoc notes.txt -o notes.pdf</pre>
       </table>
     </div>
   </section>
+
 
   <!-- WHEN TO USE -->
   <section class="section" id="when-to-use">
@@ -1474,7 +1919,7 @@ pandoc notes.txt -o notes.pdf</pre>
       <div class="alert-icon">ℹ</div>
       <div class="alert-content">
         <div class="alert-title">Don't run ComfyUI and AI agents at the same time</div>
-        ComfyUI uses ~6GB VRAM and your AI models use 2-4.5GB each. Running both simultaneously will cause out-of-memory errors on your 8GB card.
+        ComfyUI requires ~6GB VRAM for image generation while AI language models need 2–4.5GB each. Running both simultaneously on a single GPU will cause out-of-memory errors. Always close one before starting the other.
       </div>
     </div>
   </section>
@@ -1490,7 +1935,7 @@ pandoc notes.txt -o notes.pdf</pre>
       </div>
     </div>
 
-    <p>Every AI model has a <strong>context window</strong> — the maximum amount of text it can read and reason about at once. Think of it as working memory. Once you exceed it, the model starts forgetting earlier parts of the conversation or file.</p>
+    <p>Every AI model has a <strong>context window</strong> — the maximum amount of text it can hold in working memory at one time. This includes your message, the conversation history, and any files or search results passed to the model. Once the context window is full, the model begins forgetting the earliest content. Understanding these limits helps you know when to start a fresh session or break a task into smaller parts.</p>
 
     <div class="alert alert-info">
       <div class="alert-icon">ℹ</div>
@@ -1645,8 +2090,8 @@ OLLAMA_NUM_CTX=65536 ollama run qwen2.5-coder:7b
     <div class="alert alert-warn">
       <div class="alert-icon">⚠</div>
       <div class="alert-content">
-        <div class="alert-title">VRAM warning for large contexts</div>
-        Doubling the context window roughly doubles the VRAM needed for the KV cache. On your 8GB card, going above 32K tokens with a 7B model may cause out-of-memory errors. Stick to 32K unless you have a specific need.
+        <div class="alert-title">VRAM increases with larger contexts</div>
+        Doubling the context window roughly doubles the VRAM needed for the KV cache. On an 8GB card, going above 32K tokens with a 7B model may cause out-of-memory errors. Stick to the default 32K unless you have a specific need and sufficient VRAM headroom.
       </div>
     </div>
   </section>
@@ -1825,8 +2270,7 @@ general_llm = <span class="fn">LLM</span>(model=<span class="str">"ollama/llama3
         <span class="code-filename">~/.aider.conf.yml</span>
         <button class="code-copy" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="var">model</span>: <span class="str">ollama/qwen2.5-coder:7b</span>   <span class="cm"># ← change this</span>
-<span class="var">ollama-api-base</span>: <span class="str">http://localhost:11434</span></pre>
+      <pre><span class="var">model</span>: <span class="str">ollama/qwen2.5-coder:7b</span>   <span class="cm"># ← change this (remove ollama-api-base line, not needed in newer aider)</span></pre>
     </div>
 
     <h3>Swap Continue.dev models</h3>
@@ -1854,7 +2298,7 @@ general_llm = <span class="fn">LLM</span>(model=<span class="str">"ollama/llama3
       <div class="section-title-group">
         <div class="section-num">15 — Reference</div>
         <div class="section-title">Installed Models</div>
-        <div class="section-subtitle">Full overview of your model stack</div>
+        <div class="section-subtitle">Full overview of the model stack and what each one does</div>
       </div>
     </div>
 
@@ -1870,55 +2314,13 @@ general_llm = <span class="fn">LLM</span>(model=<span class="str">"ollama/llama3
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><code>qwen2.5:3b</code></td>
-            <td>1.9 GB</td>
-            <td>~2 GB</td>
-            <td>Router / general</td>
-            <td>main.py router</td>
-          </tr>
-          <tr>
-            <td><code>qwen2.5-coder:7b</code></td>
-            <td>4.7 GB</td>
-            <td>~4.5 GB</td>
-            <td>Code generation</td>
-            <td>main.py, Aider, Continue.dev</td>
-          </tr>
-          <tr>
-            <td><code>deepseek-r1:7b</code></td>
-            <td>4.7 GB</td>
-            <td>~4.5 GB</td>
-            <td>Math & reasoning</td>
-            <td>main.py math agent</td>
-          </tr>
-          <tr>
-            <td><code>llama3.2:3b</code></td>
-            <td>2.0 GB</td>
-            <td>~2 GB</td>
-            <td>General + search</td>
-            <td>main.py, WebUI</td>
-          </tr>
-          <tr>
-            <td><code>llava:7b</code></td>
-            <td>4.7 GB</td>
-            <td>~4.5 GB</td>
-            <td>Image understanding</td>
-            <td>WebUI only</td>
-          </tr>
-          <tr>
-            <td><code>kokoro-onnx</code></td>
-            <td>~300 MB</td>
-            <td>0 (CPU)</td>
-            <td>Text to speech</td>
-            <td>tts command, main.py</td>
-          </tr>
-          <tr>
-            <td><code>sdxl-turbo</code></td>
-            <td>6.0 GB</td>
-            <td>~6 GB</td>
-            <td>Image generation</td>
-            <td>ComfyUI</td>
-          </tr>
+          <tr><td><code>qwen2.5:3b</code></td><td>1.9 GB</td><td>~2 GB</td><td>Router / general</td><td>main.py router</td></tr>
+          <tr><td><code>qwen2.5-coder:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Code generation</td><td>main.py, Aider, Continue.dev</td></tr>
+          <tr><td><code>deepseek-r1:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Math & reasoning</td><td>main.py math agent</td></tr>
+          <tr><td><code>llama3.2:3b</code></td><td>2.0 GB</td><td>~2 GB</td><td>General + search</td><td>main.py, WebUI</td></tr>
+          <tr><td><code>llava:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Image understanding</td><td>WebUI only</td></tr>
+          <tr><td><code>kokoro-onnx</code></td><td>~300 MB</td><td>0 (CPU)</td><td>Text to speech</td><td>tts command, main.py</td></tr>
+          <tr><td><code>sdxl-turbo</code></td><td>6.0 GB</td><td>~6 GB</td><td>Image generation</td><td>ComfyUI</td></tr>
         </tbody>
       </table>
     </div>
@@ -1932,10 +2334,477 @@ general_llm = <span class="fn">LLM</span>(model=<span class="str">"ollama/llama3
     </div>
   </section>
 
+  <!-- GITHUB -->
+  <section class="section" id="github">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🐙</div>
+      <div class="section-title-group">
+        <div class="section-num">16 — GitHub</div>
+        <div class="section-title">Git & GitHub</div>
+        <div class="section-subtitle">Version control for your agents folder</div>
+      </div>
+    </div>
+
+    <p>The <code>~/agents</code> folder is tracked with git and hosted on GitHub. Binary model files are excluded via <code>.gitignore</code> since they exceed GitHub's 100MB file size limit — only scripts and configuration are version-controlled. The project is licensed under Apache 2.0.</p>
+
+    <h3>What's in the repo vs what's not</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Tracked ✓</div>
+        <div class="card-title">Scripts & Config</div>
+        <div class="card-desc"><code>main.py</code>, <code>tts.py</code>, <code>run.sh</code>, <code>sdxl_workflow.json</code>, <code>README.md</code>, <code>LICENSE</code>, <code>.gitignore</code></div>
+        <div class="card-badge badge-green">Pushed to GitHub</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Ignored ✗</div>
+        <div class="card-title">Large Model Files</div>
+        <div class="card-desc"><code>kokoro-v0_19.onnx</code>, <code>voices-v1.0.bin</code>, <code>voices.bin</code>, <code>__pycache__/</code> — too large for GitHub (310MB+). Still on disk, just not tracked.</div>
+        <div class="card-badge badge-amber">Local only</div>
+      </div>
+    </div>
+
+    <h3>What lives outside the repo entirely</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>What</th><th>Where</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Agents venv</td><td><code>~/.venvs/agents/</code></td><td>All Python packages. Recreate with <code>pip install crewai kokoro-onnx sounddevice</code></td></tr>
+          <tr><td>Aider venv</td><td><code>~/.venvs/aider/</code></td><td>Separate to avoid numpy conflicts with kokoro</td></tr>
+          <tr><td>Ollama models</td><td><code>~/.ollama/</code></td><td>Re-download with <code>ollama pull modelname</code></td></tr>
+          <tr><td>SearXNG</td><td>Docker container</td><td>Runs via <code>docker-compose up -d</code></td></tr>
+          <tr><td>ComfyUI</td><td><code>~/ComfyUI/</code></td><td>Separate installation + SDXL-Turbo model</td></tr>
+          <tr><td>Aider config</td><td><code>~/.aider.conf.yml</code></td><td>Only needs: <code>model: ollama/qwen2.5-coder:7b</code></td></tr>
+          <tr><td>Continue.dev</td><td><code>~/.continue/config.json</code></td><td>VSCodium extension config</td></tr>
+          <tr><td>Fish aliases</td><td><code>~/.config/fish/</code></td><td>agents, tts, webui, searxng, comfyui aliases</td></tr>
+          <tr><td>Kokoro model files</td><td><code>~/agents/</code> (local only)</td><td>Not on GitHub — download separately</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Common git commands</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — git workflow</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Check what changed</span>
+git status && git diff
+
+<span class="cm"># Save and push changes</span>
+git add .
+git commit -m "describe what changed"
+git push
+
+<span class="cm"># Pull latest</span>
+git pull origin master
+
+<span class="cm"># Undo last commit (keeps your changes)</span>
+git reset HEAD~1
+
+<span class="cm"># Restore a single file to last commit state</span>
+git checkout main.py
+
+<span class="cm"># From inside aider (no need to leave)</span>
+/git push
+/git pull origin master
+/undo</pre>
+    </div>
+  </section>
+
+  <!-- TROUBLESHOOTING -->
+  <section class="section" id="troubleshoot">
+    <div class="section-header">
+      <div class="section-icon icon-red">🔧</div>
+      <div class="section-title-group">
+        <div class="section-num">17 — Troubleshooting</div>
+        <div class="section-title">Common Problems</div>
+        <div class="section-subtitle">Solutions to issues you may encounter</div>
+      </div>
+    </div>
+
+    <h3>Agents & Router</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">Router triggers FILE for casual file mentions</div>
+          <div class="step-desc">The router uses strict keywords — only "convert", "create a file", "make a file", "export", "save as" trigger FILE. Casual mentions like "my python file" route to CODE or GENERAL. If still happening, restart the agent session.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">First response is very slow</div>
+          <div class="step-desc">Normal — the router model takes 2–4 seconds to load into VRAM on first run. Subsequent questions in the same session are faster.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">Venv not activating / crewai not found</div>
+          <div class="step-desc">Run <code>source ~/.venvs/agents/bin/activate.fish</code> manually, then <code>python ~/agents/main.py</code>. Or use the <code>agents</code> alias which handles activation automatically.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>PDF / File Conversion</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">pdflatex not found / lmodern.sty missing</div>
+          <div class="step-desc">Install the full texlive stack: <code>sudo pacman -S texlive</code> and press Enter to select all 22 packages. The agent uses <code>xelatex</code> as the PDF engine which is included in the bundle.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">~/... path not found</div>
+          <div class="step-desc">The agent calls <code>os.path.expanduser()</code> automatically. But if using pandoc directly, always use the full absolute path: <code>/home/username/Documents/file.txt</code> instead of <code>~/Documents/file.txt</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>TTS / Kokoro</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">TTS Error: numpy version conflict</div>
+          <div class="step-desc">Kokoro requires <code>numpy>=2.0.2</code>. If something downgraded it, fix it: activate agents venv then run <code>pip install "numpy>=2.0.2"</code>. Verify with <code>python -c "import kokoro_onnx; print('ok')"</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">No audio output from TTS</div>
+          <div class="step-desc">Check sounddevice: <code>python -c "import sounddevice; print(sounddevice.query_devices())"</code>. Make sure your audio output is set correctly in system settings.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Aider</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">unrecognized arguments: --ollama-api-base</div>
+          <div class="step-desc">Remove the <code>ollama-api-base</code> line from <code>~/.aider.conf.yml</code>. The file should only contain one line: <code>model: ollama/qwen2.5-coder:7b</code>. Newer aider versions don't use that flag.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">Aider conflicts with crewai or kokoro</div>
+          <div class="step-desc">Never install aider into the agents venv. Aider lives at <code>~/.venvs/aider/</code>. If numpy got downgraded in the agents venv, fix it: <code>pip install "numpy>=2.0.2"</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">fastfetch shows on every aider ! command</div>
+          <div class="step-desc">Wrap fastfetch in an interactive check in <code>~/.config/fish/conf.d/30-autostart.fish</code>: replace <code>fastfetch</code> with <code>if status is-interactive</code> / <code>    fastfetch</code> / <code>end</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">GitHub push rejected — file too large</div>
+          <div class="step-desc">Model files exceed GitHub's 100MB limit. Add to <code>.gitignore</code>, remove from history with <code>git filter-branch --force --index-filter "git rm --cached --ignore-unmatch kokoro-v0_19.onnx voices-v1.0.bin voices.bin" --prune-empty --tag-name-filter cat -- --all</code>, then <code>git push --force</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Ollama & Services</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">Out of VRAM / model fails to load</div>
+          <div class="step-desc">Don't run ComfyUI and agents simultaneously — ComfyUI uses ~6GB leaving nothing for Ollama. Close ComfyUI first. Check what's loaded: <code>ollama ps</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">Ollama not responding</div>
+          <div class="step-desc">Check status: <code>systemctl status ollama</code>. Restart: <code>systemctl restart ollama</code>. Verify models: <code>ollama list</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">!</div>
+        <div class="step-content">
+          <div class="step-title">SearXNG returns no results</div>
+          <div class="step-desc">Check Docker: <code>docker ps | grep searxng</code>. If not running: <code>cd ~/searxng && docker-compose up -d</code>. Then visit <code>localhost:8888</code> to confirm.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYSTEM REQUIREMENTS -->
+  <section class="section" id="sysreq">
+    <div class="section-header">
+      <div class="section-icon icon-amber">⚙</div>
+      <div class="section-title-group">
+        <div class="section-num">18 — System Requirements</div>
+        <div class="section-title">Hardware & Software Requirements</div>
+        <div class="section-subtitle">What each tool needs to run</div>
+      </div>
+    </div>
+
+    <p>The minimum hardware requirements vary by component. The stack is designed to run on a single consumer-grade GPU. The key constraint is VRAM — image generation and language models cannot share GPU memory simultaneously and must be run separately.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>Min RAM</th><th>Min VRAM</th><th>Disk</th><th>CPU</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Ollama + qwen2.5:3b</code></td>
+            <td>4 GB</td>
+            <td>2 GB</td>
+            <td>2 GB</td>
+            <td>Any modern x86</td>
+            <td>Router model. Loads/unloads automatically.</td>
+          </tr>
+          <tr>
+            <td><code>qwen2.5-coder:7b</code></td>
+            <td>8 GB</td>
+            <td>4.5 GB</td>
+            <td>5 GB</td>
+            <td>Any modern x86</td>
+            <td>Used by agents, aider, Continue.dev</td>
+          </tr>
+          <tr>
+            <td><code>deepseek-r1:7b</code></td>
+            <td>8 GB</td>
+            <td>4.5 GB</td>
+            <td>5 GB</td>
+            <td>Any modern x86</td>
+            <td>Math/reasoning agent</td>
+          </tr>
+          <tr>
+            <td><code>llama3.2:3b</code></td>
+            <td>4 GB</td>
+            <td>2 GB</td>
+            <td>2 GB</td>
+            <td>Any modern x86</td>
+            <td>General + search synthesis</td>
+          </tr>
+          <tr>
+            <td><code>llava:7b</code></td>
+            <td>8 GB</td>
+            <td>4.5 GB</td>
+            <td>5 GB</td>
+            <td>Any modern x86</td>
+            <td>Image understanding — WebUI only</td>
+          </tr>
+          <tr>
+            <td><code>Kokoro TTS</code></td>
+            <td>2 GB</td>
+            <td><strong>0</strong> (CPU only)</td>
+            <td>~400 MB</td>
+            <td>Any modern x86</td>
+            <td>Runs on CPU, no GPU needed</td>
+          </tr>
+          <tr>
+            <td><code>SDXL-Turbo (ComfyUI)</code></td>
+            <td>8 GB</td>
+            <td><strong>6 GB</strong></td>
+            <td>6 GB</td>
+            <td>Any modern x86</td>
+            <td>Cannot run alongside Ollama models</td>
+          </tr>
+          <tr>
+            <td><code>SearXNG (Docker)</code></td>
+            <td>512 MB</td>
+            <td>0</td>
+            <td>~200 MB</td>
+            <td>Any</td>
+            <td>Runs in Docker, auto-starts on boot</td>
+          </tr>
+          <tr>
+            <td><code>Open WebUI (Docker)</code></td>
+            <td>512 MB</td>
+            <td>0</td>
+            <td>~500 MB</td>
+            <td>Any</td>
+            <td>Runs in Docker, auto-starts on boot</td>
+          </tr>
+          <tr>
+            <td><code>Aider</code></td>
+            <td>512 MB</td>
+            <td>0 (uses Ollama)</td>
+            <td>~200 MB venv</td>
+            <td>Any</td>
+            <td>Separate venv at ~/.venvs/aider</td>
+          </tr>
+          <tr>
+            <td><code>VSCodium + Continue.dev</code></td>
+            <td>1 GB</td>
+            <td>0 (uses Ollama)</td>
+            <td>~500 MB</td>
+            <td>Any</td>
+            <td>Uses same Ollama models as agents</td>
+          </tr>
+          <tr>
+            <td><strong>Total (all running)</strong></td>
+            <td><strong>~6 GB</strong></td>
+            <td><strong>~4.5 GB</strong></td>
+            <td><strong>~30 GB</strong></td>
+            <td>—</td>
+            <td>Agents + one Ollama model at a time</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">The VRAM constraint</div>
+        SDXL-Turbo requires ~6GB VRAM and the largest Ollama models require ~4.5GB. On an 8GB card these cannot run simultaneously. Always close ComfyUI before using AI agents and vice versa. On cards with 12GB+ VRAM this limitation does not apply.
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Recommended minimum for the full stack</div>
+        <strong>GPU:</strong> NVIDIA with 8GB VRAM (RTX 3070 / 4060 or equivalent). <strong>RAM:</strong> 16GB. <strong>Disk:</strong> 50GB free. <strong>CPU:</strong> Any modern x86_64 with 8+ threads. AMD GPUs work with Ollama via ROCm but ComfyUI setup differs — check the ComfyUI docs for AMD-specific instructions.
+      </div>
+    </div>
+  </section>
+
+  <!-- FUTURE TOOLS -->
+  <section class="section" id="future">
+    <div class="section-header">
+      <div class="section-icon icon-cyan">🚀</div>
+      <div class="section-title-group">
+        <div class="section-num">19 — Future Tools</div>
+        <div class="section-title">What You Could Add</div>
+        <div class="section-subtitle">Tools that integrate well with your existing stack</div>
+      </div>
+    </div>
+
+    <p>Your stack is already very capable. Here's what makes sense to add next, organized by effort and value.</p>
+
+    <h3>New agents for main.py</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Easy to add</div>
+        <div class="card-title">🖼 Image Agent</div>
+        <div class="card-desc">Route "generate an image of..." to ComfyUI via its API at <code>localhost:8188</code>. ComfyUI has a REST API — you can trigger workflows programmatically from main.py without opening the browser.</div>
+        <div class="card-badge badge-blue">ComfyUI API</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Easy to add</div>
+        <div class="card-title">📋 Clipboard Agent</div>
+        <div class="card-desc">Route "summarize my clipboard" or "fix this text" to read from clipboard (<code>pyperclip</code>), process with an LLM, and write back. Useful for quick text fixes without copy-pasting into the terminal.</div>
+        <div class="card-badge badge-green">pyperclip</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Medium effort</div>
+        <div class="card-title">📧 Email Agent</div>
+        <div class="card-desc">Connect to a local email client or IMAP server to summarize, draft, or reply to emails via AI. Works well with <code>llama3.2:3b</code> for drafting and <code>deepseek-r1</code> for analysis.</div>
+        <div class="card-badge badge-amber">IMAP + smtplib</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Medium effort</div>
+        <div class="card-title">📅 Calendar Agent</div>
+        <div class="card-desc">Parse natural language like "schedule meeting tomorrow at 3pm" and create calendar events via <code>ics</code> files or a local CalDAV server. Fully offline.</div>
+        <div class="card-badge badge-purple">ics / CalDAV</div>
+      </div>
+    </div>
+
+    <h3>New standalone tools</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Highly recommended</div>
+        <div class="card-title">🎙 Whisper STT</div>
+        <div class="card-desc">OpenAI Whisper running locally converts speech to text. Pair it with your TTS to create a fully voice-controlled agent loop. <code>faster-whisper</code> runs well on your RTX 4060.</div>
+        <div class="card-badge badge-green">faster-whisper</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Highly recommended</div>
+        <div class="card-title">🧠 RAG System</div>
+        <div class="card-desc">Retrieval-Augmented Generation — lets your agents search and answer questions from your own documents (PDFs, notes, code). Use <code>ChromaDB</code> (already in your venv!) + <code>ollama embeddings</code>.</div>
+        <div class="card-badge badge-blue">ChromaDB + ollama</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Worth trying</div>
+        <div class="card-title">🌊 n8n</div>
+        <div class="card-desc">Visual workflow automation (like Zapier but self-hosted). Can connect your AI agents to files, emails, webhooks, and APIs via a drag-and-drop interface. Runs in Docker. <a href="https://n8n.io" target="_blank" style="color:var(--accent)">n8n.io</a></div>
+        <div class="card-badge badge-amber">Docker</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Worth trying</div>
+        <div class="card-title">📊 Metabase</div>
+        <div class="card-desc">Self-hosted data analytics and dashboards. If you start collecting data from your agents (search queries, file operations, usage stats), Metabase visualizes it locally.</div>
+        <div class="card-badge badge-purple">Docker</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Advanced</div>
+        <div class="card-title">🤖 AutoGen / LangGraph</div>
+        <div class="card-desc">Multi-agent frameworks that let agents talk to each other, delegate tasks, and loop until a goal is achieved. More powerful than crewai for complex workflows. <a href="https://microsoft.github.io/autogen/" target="_blank" style="color:var(--accent)">AutoGen docs</a></div>
+        <div class="card-badge badge-blue">pip install autogen</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Advanced</div>
+        <div class="card-title">🖥 Open Interpreter</div>
+        <div class="card-desc">An AI that can execute code, run terminal commands, manage files, and browse the web — all locally. Think of it as a much more capable version of your current agent system. <a href="https://openinterpreter.com" target="_blank" style="color:var(--accent)">openinterpreter.com</a></div>
+        <div class="card-badge badge-amber">pip install open-interpreter</div>
+      </div>
+    </div>
+
+    <h3>Model upgrades worth considering</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Model</th><th>Replaces</th><th>Why upgrade</th><th>VRAM needed</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>qwen2.5-coder:14b</code></td>
+            <td>qwen2.5-coder:7b</td>
+            <td>Significantly better code quality. Your fish alias already uses 14b for aider.</td>
+            <td>~8 GB (tight on 8GB card)</td>
+          </tr>
+          <tr>
+            <td><code>deepseek-r1:14b</code></td>
+            <td>deepseek-r1:7b</td>
+            <td>Much stronger reasoning. Worth it for complex math/logic tasks.</td>
+            <td>~8 GB (tight)</td>
+          </tr>
+          <tr>
+            <td><code>mistral:7b</code></td>
+            <td>llama3.2:3b</td>
+            <td>Better general performance, still fast. Good alternative for GENERAL route.</td>
+            <td>~4.5 GB</td>
+          </tr>
+          <tr>
+            <td><code>flux-schnell</code></td>
+            <td>SDXL-Turbo</td>
+            <td>Newer architecture, better image quality at similar speeds. Requires ComfyUI flux nodes.</td>
+            <td>~6–8 GB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">First upgrade to consider: Whisper STT</div>
+        Adding speech-to-text would let you speak to your agents instead of typing. Combined with Kokoro TTS you already have, this creates a fully voice-driven offline assistant. Install: <code>pip install faster-whisper</code> — then add a VOICE route that records mic input, transcribes it, and feeds it to the existing router.
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <div class="footer">
-    <div class="footer-text">LOCAL AI STACK — <span class="footer-accent">CachyOS / Hyprland</span> — RTX 4060 8GB</div>
-    <div class="footer-text">Built with ❤ — 100% offline, 100% yours</div>
+    <div class="footer-text">LOCAL AI STACK — Built by <span class="footer-accent">Ilyes Hafs</span> — <a href="https://github.com/Ilyes-Hafs/agents" target="_blank" style="color:var(--accent); text-decoration:none;">github.com/Ilyes-Hafs/agents</a></div>
+    <div class="footer-text">100% private — no cloud, no subscriptions, no data leaving your machine</div>
   </div>
 
 </main>
