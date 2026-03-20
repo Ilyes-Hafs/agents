@@ -5,18 +5,12 @@ import sys
 import requests
 
 # ── Models ──────────────────────────────────────────────
-router_llm = LLM(model="ollama/qwen2.5:3b",
-                 base_url="http://localhost:11434")
-coder_llm = LLM(model="ollama/qwen2.5-coder:7b",
-                base_url="http://localhost:11434")
-math_llm = LLM(model="ollama/deepseek-r1:7b",
-               base_url="http://localhost:11434")
-general_llm = LLM(model="ollama/llama3.2:3b",
-                  base_url="http://localhost:11434")
+router_llm  = LLM(model="ollama/qwen2.5:3b",          base_url="http://localhost:11434")
+coder_llm   = LLM(model="ollama/qwen2.5-coder:7b",    base_url="http://localhost:11434")
+math_llm    = LLM(model="ollama/deepseek-r1:7b",       base_url="http://localhost:11434")
+general_llm = LLM(model="ollama/llama3.2:3b",          base_url="http://localhost:11434")
 
 # ── SearXNG search function ──────────────────────────────
-
-
 def searxng_search(query: str) -> str:
     try:
         r = requests.get(
@@ -35,41 +29,39 @@ def searxng_search(query: str) -> str:
     except Exception as e:
         return f"Search error: {e}"
 
-
 # ── Agents ───────────────────────────────────────────────
 router = Agent(
     role="Router",
     goal="Classify the user request into one category.",
-    backstory="""You are a strict dispatcher. Output ONLY one word.
-
-Rules:
-- CODE    -> writing, fixing, explaining, or debugging code
-- MATH    -> calculations, arithmetic, equations, integrals, derivatives,
-            algebra, geometry, statistics. ANY numerical calculation even
-            simple ones like "1+1", "15% of 340", "sqrt(144)". If it involves
-            numbers and operations, it's MATH not CODE.
-- SEARCH  -> current events, facts that need a web lookup
-- TTS     -> user wants specific text they wrote spoken aloud. Triggered by
-             'say', 'speak', 'read this', OR when the message contains quoted
-             text in quotes like "..." they want spoken. The text to speak is
-             already in the message — nothing needs to be searched or fetched.
-- READ    -> user wants content FETCHED from an external source then read aloud.
-             Only use READ when content needs to be searched first (a book,
-             poem, article, webpage). Keywords: 'read me the first page of X',
-             'read me a poem about X', 'recite the opening of X'.
-             Do NOT use READ if the user provides the text themselves.
-- FIXTEXT -> user wants punctuation, grammar, or syntax corrected in their text.
-             Keywords: 'fix my text', 'correct this', 'fix punctuation',
-             'fix grammar', 'fix syntax'.
-- FILE    -> user explicitly says 'convert', 'export to [format]',
-            'create a file', 'make a [filetype] file', 'save as',
-            or 'write a file'. NOT triggered by casual file mentions.
-- AIDER   -> user wants to edit, refactor, fix, or work on an existing
-            project or codebase. Keywords: 'refactor', 'edit my code',
-            'work on my project', 'open aider', 'fix my project'.
-- GENERAL -> everything else
-
-Output exactly one word. No punctuation, no explanation.""",
+    backstory=(
+        "You are a strict dispatcher. Output ONLY one word.\n\n"
+        "Rules:\n"
+        "- CODE    -> writing, fixing, debugging, explaining, or refactoring code. "
+        "Triggered by programming languages, functions, scripts, bugs, algorithms, "
+        "data structures, APIs, frameworks. NOT math equations or calculations.\n"
+        "- MATH    -> complex math requiring step-by-step reasoning: integrals, "
+        "derivatives, limits, equations, algebra, geometry, trigonometry, statistics, "
+        "proofs, series, matrices, primitives, antiderivatives. "
+        "NOT simple arithmetic like 1+1, 2*3, 5% — those go to GENERAL.\n"
+        "- SEARCH  -> time-sensitive facts: current news, software versions, prices, "
+        "recent events, sports scores, weather. Do NOT use for definitions, concepts, "
+        "or explanations of stable knowledge like 'what is recursion' — those go to GENERAL.\n"
+        "- TTS     -> user wants text they wrote spoken aloud. Triggered by 'say', 'speak', "
+        "'read this', or quoted text in quotes they want spoken. Text is already in the message.\n"
+        "- READ    -> user wants content FETCHED from an external source then read aloud. "
+        "Only use when content must be searched first: a book, poem, article, webpage. "
+        "Do NOT use READ if the user provides the text themselves.\n"
+        "- FIXTEXT -> user wants punctuation, grammar, or syntax corrected. "
+        "Keywords: 'fix my text', 'correct this', 'fix punctuation', 'fix grammar'.\n"
+        "- FILE    -> user explicitly says 'convert', 'export to format', 'create a file', "
+        "'make a filetype file', 'save as', or 'write a file'. NOT casual file mentions.\n"
+        "- AIDER   -> user wants to edit, refactor, or work on an existing project. "
+        "Keywords: 'refactor', 'edit my code', 'work on my project', 'open aider'.\n"
+        "- GENERAL -> everything else: definitions, concepts, explanations of stable knowledge, "
+        "writing, translation, summaries, simple arithmetic (1+1, 5*3, 20% of 100), "
+        "casual questions, general chat.\n\n"
+        "Output exactly one word. No punctuation, no explanation."
+    ),
     llm=router_llm,
     verbose=False
 )
@@ -134,8 +126,6 @@ Output ONLY the corrected text — no explanation, no commentary, no quotes arou
 )
 
 # ── Router logic ─────────────────────────────────────────
-
-
 def route(user_input: str) -> str:
     task = Task(
         description=f"Classify this request into one word: '{user_input}'",
@@ -150,14 +140,10 @@ def route(user_input: str) -> str:
     return "GENERAL"
 
 # ── Prompt improver (disabled — agents handle prompts natively) ──
-
-
 def maybe_improve_prompt(user_input: str, category: str) -> str:
     return user_input
 
 # ── TTS helpers ───────────────────────────────────────────
-
-
 def speak(text: str):
     """Speak text with interactive voice/language picker."""
     try:
@@ -168,15 +154,13 @@ def speak(text: str):
         print(f"[TTS] Error: {e}")
 
 # ── READ agent — fetch content then speak it ──────────────
-
-
 def read_agent(user_input: str):
     print("[READ] Fetching content...\n")
 
     # Step 1: generate/retrieve the content
     task = Task(
         description=f"The user wants this text retrieved or written to be read aloud: '{user_input}'. "
-        f"Provide ONLY the raw text content — no commentary, no 'Here is', just the text itself.",
+                    f"Provide ONLY the raw text content — no commentary, no 'Here is', just the text itself.",
         expected_output="Raw text content only, ready to be spoken aloud.",
         agent=reader
     )
@@ -193,11 +177,8 @@ def read_agent(user_input: str):
     # Step 3: speak with voice picker
     speak(content)
 
-
 # ── File agent (create + convert) ────────────────────────
-CONVERT_KEYWORDS = ["convert", "export",
-                    "change format", "turn into", "transform", "save as"]
-
+CONVERT_KEYWORDS = ["convert", "export", "change format", "turn into", "transform", "save as"]
 
 def file_agent(user_input: str):
     is_convert = any(kw in user_input.lower() for kw in CONVERT_KEYWORDS)
@@ -226,14 +207,12 @@ def file_agent(user_input: str):
 
     else:
         print("[FILE] Create mode")
-        filename = input(
-            "Filename (e.g. notes.md, script.py, hello.txt): ").strip()
+        filename = input("Filename (e.g. notes.md, script.py, hello.txt): ").strip()
         if not filename:
             print("[FILE] No filename given, cancelled.")
             return
 
-        save_path = input(
-            "Save to folder (default: ~/Documents): ").strip() or "~/Documents"
+        save_path = input("Save to folder (default: ~/Documents): ").strip() or "~/Documents"
         save_path = os.path.expanduser(save_path)
         os.makedirs(save_path, exist_ok=True)
 
@@ -241,10 +220,8 @@ def file_agent(user_input: str):
 
         generate = input("Generate content with AI? (y/n): ").strip().lower()
         if generate == "y":
-            prompt = input(
-                "Describe what the file should contain: ").strip() or user_input
-            agent = coder if ext in [".py", ".js", ".ts",
-                                     ".sh", ".c", ".cpp", ".rs", ".go"] else general
+            prompt = input("Describe what the file should contain: ").strip() or user_input
+            agent = coder if ext in [".py", ".js", ".ts", ".sh", ".c", ".cpp", ".rs", ".go"] else general
             task = Task(
                 description=f"Write the full content for a file called '{filename}'. Request: {prompt}. Output ONLY the file content, no explanation.",
                 expected_output="Raw file content only.",
@@ -267,8 +244,7 @@ def file_agent(user_input: str):
             f.write(content)
         print(f"[FILE] Created -> {full_path}")
 
-        fmt = input(
-            "Also convert to another format? (pdf/docx/leave blank to skip): ").strip().lower()
+        fmt = input("Also convert to another format? (pdf/docx/leave blank to skip): ").strip().lower()
         if fmt:
             out = os.path.splitext(full_path)[0] + "." + fmt
             cmd = ["pandoc", full_path, "-o", out]
@@ -281,8 +257,6 @@ def file_agent(user_input: str):
                 print(f"[FILE] Convert error:\n{result.stderr}")
 
 # ── Read agent (search → extract → speak) ────────────────
-
-
 def read_agent(user_input: str):
     print("[READ] Searching for content...\n")
 
@@ -312,10 +286,8 @@ Output ONLY the raw text to be spoken.""",
     from tts import speak_interactive
     speak_interactive(clean_text)
 
-
 # ── Aider agent ──────────────────────────────────────────
 AIDER_BIN = "/home/ilyes/.venvs/aider/bin/aider"
-
 
 def run_aider(user_input: str):
     project = input("Project path (default: current dir): ").strip() or "."
@@ -328,16 +300,13 @@ def run_aider(user_input: str):
     print("\n[AIDER] Back in local AI\n")
 
 # ── Graph plotter ─────────────────────────────────────────
-
-
 def try_plot(expression: str, title: str = ""):
     try:
         import numpy as np
         import matplotlib.pyplot as plt
 
         # Ask for range
-        x_range = input(
-            "X range? (e.g. -10 10, default: -10 10): ").strip() or "-10 10"
+        x_range = input("X range? (e.g. -10 10, default: -10 10): ").strip() or "-10 10"
         parts = x_range.split()
         x_min, x_max = float(parts[0]), float(parts[1])
 
@@ -367,8 +336,7 @@ def try_plot(expression: str, title: str = ""):
         for spine in plt.gca().spines.values():
             spine.set_edgecolor("#1e2d3d")
         plt.tight_layout()
-        plt.savefig(os.path.expanduser("~/Pictures/graph.png"),
-                    dpi=150, facecolor="#070a0f")
+        plt.savefig("graph.png", dpi=150, facecolor="#070a0f")
         plt.show()
         print("[MATH] Graph saved as graph.png\n")
     except Exception as e:
@@ -376,8 +344,6 @@ def try_plot(expression: str, title: str = ""):
         print("[MATH] Tip: use numpy syntax e.g. 'np.sin(x)', 'x**2', 'np.exp(-x**2)'")
 
 # ── Main loop ────────────────────────────────────────────
-
-
 def main():
     print("🤖 Local AI ready. Type your question (or 'exit'):\n")
     while True:
@@ -442,8 +408,7 @@ Show your full working:
             fixed = str(crew.kickoff()).strip()
             print(f"\n[FIXTEXT] Corrected: {fixed}\n")
             # Offer to speak it
-            speak_it = input(
-                "Speak the corrected text? (y/n): ").strip().lower()
+            speak_it = input("Speak the corrected text? (y/n): ").strip().lower()
             if speak_it == "y":
                 speak(fixed)
             continue
@@ -456,19 +421,16 @@ Show your full working:
         else:
             agent, desc = general, f"Answer this: {user_input}"
 
-        task = Task(
-            description=desc, expected_output="A helpful, detailed response.", agent=agent)
+        task = Task(description=desc, expected_output="A helpful, detailed response.", agent=agent)
         crew = Crew(agents=[agent], tasks=[task], verbose=False)
         result = crew.kickoff()
         print(f"\nAssistant: {result}\n")
 
         # Offer to plot graph after MATH answers
         if category == "MATH":
-            plot = input(
-                "Plot a graph? Enter a Python math expression or leave blank to skip: ").strip()
+            plot = input("Plot a graph? Enter a Python math expression or leave blank to skip: ").strip()
             if plot:
                 try_plot(plot, user_input)
-
 
 if __name__ == "__main__":
     main()
