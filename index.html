@@ -861,6 +861,7 @@
     <a class="nav-item" href="#webui"><span class="nav-icon">🌐</span> Open WebUI</a>
     <a class="nav-item" href="#searxng"><span class="nav-icon">🔍</span> SearXNG</a>
     <a class="nav-item" href="#tts"><span class="nav-icon">🔊</span> Voice (TTS)</a>
+    <a class="nav-item" href="#tts"><span class="nav-icon">📖</span> Read Aloud (READ)</a>
     <a class="nav-item" href="#comfyui"><span class="nav-icon">🎨</span> ComfyUI</a>
     <a class="nav-item" href="#vscodium"><span class="nav-icon">💻</span> VSCodium</a>
     <a class="nav-item" href="#aider"><span class="nav-icon">🛠</span> Aider</a>
@@ -919,7 +920,7 @@
         <div class="stat-label">AI Models</div>
       </div>
       <div class="stat">
-        <div class="stat-num">10</div>
+        <div class="stat-num">11</div>
         <div class="stat-label">Tools</div>
       </div>
       <div class="stat">
@@ -981,7 +982,7 @@
       <div class="alert-icon">ℹ</div>
       <div class="alert-content">
         <div class="alert-title">The three-stage pipeline</div>
-        Every message goes through up to three stages: <strong>(1)</strong> the Prompt Improver rewrites short inputs into better prompts, <strong>(2)</strong> the Router classifies the improved message into one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>FILE</code>, <code>AIDER</code>, or <code>GENERAL</code>, and <strong>(3)</strong> the appropriate specialist model loads and handles the request. Only one model occupies VRAM at a time.
+        Every message goes through up to three stages: <strong>(1)</strong> the Prompt Improver rewrites short inputs into better prompts, <strong>(2)</strong> the Router classifies the improved message into one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>READ</code>, <code>FILE</code>, <code>AIDER</code>, or <code>GENERAL</code>, and <strong>(3)</strong> the appropriate specialist model loads and handles the request. Only one model occupies VRAM at a time.
       </div>
     </div>
   </section>
@@ -1307,52 +1308,163 @@ You: <span class="fn">exit</span></pre>
       <div class="section-title-group">
         <div class="section-num">06 — Voice (TTS)</div>
         <div class="section-title">Kokoro Text-to-Speech</div>
-        <div class="section-subtitle">82M parameter local voice synthesis</div>
+        <div class="section-subtitle">82M parameter local voice synthesis with interactive voice picker</div>
       </div>
     </div>
 
-    <p>Kokoro is an open-source text-to-speech model with 82 million parameters. It runs entirely on CPU using ONNX Runtime — no GPU or VRAM required. Despite its small size it produces natural, expressive speech with multiple voices and language support. It is integrated into both the standalone <code>tts</code> command and the <code>TTS</code> route in <code>main.py</code>. <a href="https://github.com/thewh1teagle/kokoro-onnx" target="_blank" style="color:var(--accent)">→ kokoro-onnx GitHub</a></p>
+    <p>Kokoro is an open-source text-to-speech model with 82 million parameters. It runs entirely on CPU using ONNX Runtime — no GPU or VRAM required. Despite its small size it produces natural, expressive speech with multiple voices and language support. It is integrated into the standalone <code>tts</code> command, the <code>TTS</code> route, and the <code>READ</code> route in <code>main.py</code>. <a href="https://github.com/thewh1teagle/kokoro-onnx" target="_blank" style="color:var(--accent)">→ kokoro-onnx GitHub</a></p>
 
-    <h3>Usage</h3>
+    <h3>Two TTS routes in main.py</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">TTS route</div>
+        <div class="card-title">Say something aloud</div>
+        <div class="card-desc">Triggered by "say", "speak", "read this". Reads your exact input text aloud after prompting for language and voice selection.</div>
+        <div class="card-badge badge-amber">say / speak / read this</div>
+      </div>
+      <div class="card">
+        <div class="card-label">READ route</div>
+        <div class="card-title">Read external content</div>
+        <div class="card-desc">Triggered by "read me", "read aloud", "recite". Searches SearXNG for the content, extracts clean text, then prompts for voice and reads it aloud.</div>
+        <div class="card-badge badge-blue">read me / read aloud / recite</div>
+      </div>
+    </div>
+
+    <h3>READ route — full pipeline</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
-        <span class="code-filename">terminal — tts usage</span>
+        <span class="code-filename">terminal — READ route example</span>
         <button class="code-copy" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="cm"># Basic usage (default voice)</span>
-tts hello this is a test
+      <pre>You: <span class="fn">read me the first page of don quixote in spanish</span>
+[Router → <span class="kw">READ</span>]
+[READ] Searching for content...
 
-<span class="cm"># Specify a voice</span>
-tts --voice george good morning
+[READ] Content ready — 243 words
 
-<span class="cm"># Specify language</span>
-tts --lang fr bonjour comment ça va
+Available languages:
+  1. en (en-us) — voices: fenrir, adam, eric, liam...
+  2. en-gb — voices: george, lewis, daniel...
+  3. fr  — voices: siwis
+  4. es  — voices: dora, alex
+  ...
+Language (name or number, default: en): <span class="str">4</span>
 
-<span class="cm"># Adjust speed (default 1.2)</span>
-tts --speed 1.4 this is faster
+Available voices for this language: dora, alex
+Voice (default: first in list): <span class="str">alex</span>
 
-<span class="cm"># Show help</span>
-tts -h
-
-<span class="cm"># Interactive mode (no text argument)</span>
-tts
-<span class="str">Text to speak: </span> type here and press enter</pre>
+Speed (default 1.1): <span class="str">1.0</span>
+<span class="cm"># Audio plays in Spanish</span></pre>
     </div>
 
-    <h3>Available Languages</h3>
+    <h3>Terminal TTS usage</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — tts command</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Basic usage (default voice: fenrir)</span>
+tts hello this is a test
+
+<span class="cm"># Specify a voice by name</span>
+tts --voice george good morning
+
+<span class="cm"># Specify language + matching voice</span>
+tts --lang fr --voice siwis bonjour comment ça va
+
+<span class="cm"># Adjust speed</span>
+tts --speed 1.4 this is faster
+
+<span class="cm"># Interactive voice picker (shows all options)</span>
+tts --pick your text here
+
+<span class="cm"># Show help</span>
+tts -h</pre>
+    </div>
+
+    <h3>All available voices</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Flag</th><th>Language</th><th>Code</th></tr></thead>
+        <thead><tr><th>Language</th><th>Code</th><th>Available Voices</th></tr></thead>
         <tbody>
-          <tr><td>🇺🇸</td><td>English (American)</td><td><code>en</code></td></tr>
-          <tr><td>🇬🇧</td><td>English (British)</td><td><code>en-gb</code></td></tr>
-          <tr><td>🇫🇷</td><td>French</td><td><code>fr</code></td></tr>
-          <tr><td>🇯🇵</td><td>Japanese</td><td><code>ja</code></td></tr>
-          <tr><td>🇰🇷</td><td>Korean</td><td><code>ko</code></td></tr>
-          <tr><td>🇨🇳</td><td>Chinese (Mandarin)</td><td><code>zh</code></td></tr>
+          <tr><td>🇺🇸 English (American)</td><td><code>en</code></td><td>fenrir, adam, eric, liam, michael, echo, puck, onyx, alloy, bella, heart, jessica, nova, sarah, sky</td></tr>
+          <tr><td>🇬🇧 English (British)</td><td><code>en-gb</code></td><td>george, lewis, daniel, fable, alice, emma, isabella, lily</td></tr>
+          <tr><td>🇫🇷 French</td><td><code>fr</code></td><td>siwis</td></tr>
+          <tr><td>🇪🇸 Spanish</td><td><code>es</code></td><td>dora, alex</td></tr>
+          <tr><td>🇮🇹 Italian</td><td><code>it</code></td><td>sara, nicola</td></tr>
+          <tr><td>🇯🇵 Japanese</td><td><code>ja</code></td><td>kumo</td></tr>
+          <tr><td>🇨🇳 Chinese (Mandarin)</td><td><code>zh</code></td><td>xiaobei, xiaoni, xiaoxiao, xiaoyi, yunjian, yunxi</td></tr>
+          <tr><td>🇵🇹 Portuguese</td><td><code>pt</code></td><td>pf_dora, pm_alex, pm_santa</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <h3>TTS Engine Comparison</h3>
+    <p>Kokoro is the current engine. Here's how it compares to alternatives if you want to upgrade non-English voice quality:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Engine</th><th>Size</th><th>Offline</th><th>GPU</th><th>Pros</th><th>Cons</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Kokoro</strong> ★ current</td>
+            <td>~300 MB</td>
+            <td>✓</td>
+            <td>CPU only</td>
+            <td>Tiny, fast, great English voices, easy install, ONNX Runtime</td>
+            <td>Non-English voices sound robotic, limited language coverage</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/rhasspy/piper" target="_blank" style="color:var(--accent)">Piper</a></td>
+            <td>~50 MB/model</td>
+            <td>✓</td>
+            <td>CPU only</td>
+            <td>Very fast, excellent multilingual models, tiny per-language files, used in Home Assistant</td>
+            <td>Less expressive than Kokoro English, requires separate model per language</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/coqui-ai/TTS" target="_blank" style="color:var(--accent)">Coqui TTS</a></td>
+            <td>~1–3 GB</td>
+            <td>✓</td>
+            <td>Optional GPU</td>
+            <td>Best multilingual quality, voice cloning, many models available</td>
+            <td>Heavier install, slower on CPU, project archived (use fork)</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/suno-ai/bark" target="_blank" style="color:var(--accent)">Bark</a></td>
+            <td>~5 GB</td>
+            <td>✓</td>
+            <td>Recommended</td>
+            <td>Most expressive, supports emotion/laughter/music, very natural</td>
+            <td>Very slow on CPU, needs GPU for reasonable speed, large model</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/microsoft/edge-tts" target="_blank" style="color:var(--accent)">Edge TTS</a></td>
+            <td>0 (API)</td>
+            <td>✗</td>
+            <td>None</td>
+            <td>Excellent quality all languages, free, very fast, no install</td>
+            <td>Requires internet, uses Microsoft servers, not fully private</td>
+          </tr>
+          <tr>
+            <td><a href="https://elevenlabs.io" target="_blank" style="color:var(--accent)">ElevenLabs</a></td>
+            <td>0 (API)</td>
+            <td>✗</td>
+            <td>None</td>
+            <td>Best quality available anywhere, voice cloning, emotional control</td>
+            <td>Paid API, requires internet, not private</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">Best upgrade for non-English: Piper</div>
+        If you frequently use Spanish, French, Italian or other languages, <strong>Piper</strong> is the best drop-in upgrade — tiny model files (~50MB each), fully offline, fast on CPU, and significantly better non-English quality than Kokoro. Install: <code>pip install piper-tts</code> then download the language model you need from the <a href="https://github.com/rhasspy/piper/blob/master/VOICES.md" target="_blank" style="color:var(--accent)">Piper voices list</a>.
+      </div>
     </div>
   </section>
 

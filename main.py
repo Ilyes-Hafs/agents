@@ -39,7 +39,18 @@ Rules:
 - CODE    -> writing, fixing, explaining, or debugging code
 - MATH    -> calculations, equations, logic problems
 - SEARCH  -> current events, facts that need a web lookup
-- TTS     -> user says 'say', 'speak', 'read aloud', 'read this'
+- TTS     -> user wants specific text they wrote spoken aloud. Triggered by
+             'say', 'speak', 'read this', OR when the message contains quoted
+             text in quotes like "..." they want spoken. The text to speak is
+             already in the message — nothing needs to be searched or fetched.
+- READ    -> user wants content FETCHED from an external source then read aloud.
+             Only use READ when content needs to be searched first (a book,
+             poem, article, webpage). Keywords: 'read me the first page of X',
+             'read me a poem about X', 'recite the opening of X'.
+             Do NOT use READ if the user provides the text themselves.
+- FIXTEXT -> user wants punctuation, grammar, or syntax corrected in their text.
+             Keywords: 'fix my text', 'correct this', 'fix punctuation',
+             'fix grammar', 'fix syntax'.
 - FILE    -> user explicitly says 'convert', 'export to [format]',
             'create a file', 'make a [filetype] file', 'save as',
             or 'write a file'. NOT triggered by casual file mentions.
@@ -74,6 +85,16 @@ general = Agent(
     llm=general_llm
 )
 
+reader = Agent(
+    role="Content Retrieval Specialist",
+    goal="Retrieve or generate the exact text content requested by the user, ready to be read aloud.",
+    backstory="""You retrieve or write the exact content the user wants to hear spoken aloud.
+If they ask for a book passage, poem, article excerpt, or any specific text — provide it
+accurately and completely. Output ONLY the raw text to be spoken, no commentary,
+no 'Here is...', no titles unless they are part of the content itself.""",
+    llm=general_llm
+)
+
 prompter = Agent(
     role="Prompt Engineer",
     goal="Rewrite vague or short user inputs into clear, detailed, well-structured prompts.",
@@ -85,23 +106,32 @@ prompt — no explanation, no preamble, no quotes around it.""",
     verbose=False
 )
 
+fixtext_agent = Agent(
+    role="Text Corrector",
+    goal="Fix punctuation, grammar, and syntax errors in text.",
+    backstory="""You are a precise text editor. Fix punctuation, grammar, capitalization,
+and syntax errors in the given text. Preserve the original meaning and style exactly.
+Output ONLY the corrected text — no explanation, no commentary, no quotes around it.""",
+    llm=general_llm,
+    verbose=False
+)
+
 # ── Router logic ─────────────────────────────────────────
 def route(user_input: str) -> str:
     task = Task(
         description=f"Classify this request into one word: '{user_input}'",
-        expected_output="One word only: CODE, MATH, SEARCH, TTS, FILE, AIDER, or GENERAL",
+        expected_output="One word only: CODE, MATH, SEARCH, TTS, READ, FIXTEXT, FILE, AIDER, or GENERAL",
         agent=router
     )
     crew = Crew(agents=[router], tasks=[task], verbose=False)
     result = str(crew.kickoff()).strip().upper()
-    for keyword in ["CODE", "MATH", "SEARCH", "TTS", "FILE", "AIDER", "GENERAL"]:
+    for keyword in ["CODE", "MATH", "SEARCH", "READ", "TTS", "FIXTEXT", "FILE", "AIDER", "GENERAL"]:
         if keyword in result:
             return keyword
     return "GENERAL"
 
 # ── Prompt improver ───────────────────────────────────────
 def maybe_improve_prompt(user_input: str) -> str:
-    # Only improve if message is short or vague (under 10 words)
     if len(user_input.split()) < 10:
         task = Task(
             description=f"Rewrite this as a clearer, more detailed prompt: '{user_input}'",
@@ -115,17 +145,39 @@ def maybe_improve_prompt(user_input: str) -> str:
             return improved
     return user_input
 
-# ── TTS ──────────────────────────────────────────────────
+# ── TTS helpers ───────────────────────────────────────────
 def speak(text: str):
+    """Speak text with interactive voice/language picker."""
     try:
-        import sounddevice as sd
-        from kokoro_onnx import Kokoro
-        kokoro = Kokoro("/home/ilyes/agents/kokoro-v0_19.onnx", "/home/ilyes/agents/voices-v1.0.bin")
-        samples, sample_rate = kokoro.create(text, voice="am_fenrir", speed=1.2, lang="en-us")
-        sd.play(samples, sample_rate)
-        sd.wait()
+        sys.path.insert(0, "/home/ilyes/agents")
+        from tts import speak_interactive
+        speak_interactive(text)
     except Exception as e:
         print(f"[TTS] Error: {e}")
+
+# ── READ agent — fetch content then speak it ──────────────
+def read_agent(user_input: str):
+    print("[READ] Fetching content...\n")
+
+    # Step 1: generate/retrieve the content
+    task = Task(
+        description=f"The user wants this text retrieved or written to be read aloud: '{user_input}'. "
+                    f"Provide ONLY the raw text content — no commentary, no 'Here is', just the text itself.",
+        expected_output="Raw text content only, ready to be spoken aloud.",
+        agent=reader
+    )
+    crew = Crew(agents=[reader], tasks=[task], verbose=False)
+    content = str(crew.kickoff()).strip()
+
+    print(f"\n[READ] Content:\n{content}\n")
+
+    # Step 2: ask if user wants to hear it
+    confirm = input("Read this aloud? (y/n, default y): ").strip().lower()
+    if confirm == "n":
+        return
+
+    # Step 3: speak with voice picker
+    speak(content)
 
 # ── File agent (create + convert) ────────────────────────
 CONVERT_KEYWORDS = ["convert", "export", "change format", "turn into", "transform", "save as"]
@@ -206,6 +258,36 @@ def file_agent(user_input: str):
             else:
                 print(f"[FILE] Convert error:\n{result.stderr}")
 
+# ── Read agent (search → extract → speak) ────────────────
+def read_agent(user_input: str):
+    print("[READ] Searching for content...\n")
+
+    # Step 1: Search for the content
+    search_results = searxng_search(user_input)
+
+    # Step 2: Extract only the clean readable text
+    task = Task(
+        description=f"""The user wants to hear this read aloud: '{user_input}'
+Here are search results:
+{search_results}
+
+Extract ONLY the actual text content to be read aloud (the passage, poem, article text, etc.).
+Do NOT include URLs, source names, metadata, or any commentary.
+Do NOT add 'Here is...' or any preamble.
+Output ONLY the raw text to be spoken.""",
+        expected_output="Raw text content only, ready to be spoken aloud.",
+        agent=reader
+    )
+    crew = Crew(agents=[reader], tasks=[task], verbose=False)
+    clean_text = str(crew.kickoff()).strip()
+
+    print(f"\n[READ] Content ready — {len(clean_text.split())} words\n")
+
+    # Step 3: Speak it with voice/language picker
+    sys.path.insert(0, "/home/ilyes/agents")
+    from tts import speak_interactive
+    speak_interactive(clean_text)
+
 # ── Aider agent ──────────────────────────────────────────
 AIDER_BIN = "/home/ilyes/.venvs/aider/bin/aider"
 
@@ -245,7 +327,40 @@ def main():
             desc = f"Using these search results:\n{search_results}\n\nAnswer this: {user_input}"
             agent = general
         elif category == "TTS":
-            speak(user_input.replace("read this", "").replace("say", "").strip())
+            # Extract just the text to speak — strip command words and quoted text
+            import re
+            # If there's quoted text, extract it
+            quoted = re.findall(r'"([^"]+)"', user_input)
+            if quoted:
+                text = " ".join(quoted)
+            else:
+                # Strip command words
+                text = user_input
+                for word in ["read this", "say", "speak", "read aloud", "tell me"]:
+                    text = text.replace(word, "")
+                text = text.strip()
+            speak(text)
+            continue
+        elif category == "READ":
+            read_agent(user_input)
+            continue
+        elif category == "FIXTEXT":
+            # Extract the text to fix
+            fix_input = user_input
+            for phrase in ["fix my text", "correct this", "fix punctuation", "fix grammar", "fix syntax", "fix"]:
+                fix_input = fix_input.replace(phrase, "").strip()
+            task = Task(
+                description=f"Fix the punctuation, grammar and syntax of this text: '{fix_input}'",
+                expected_output="The corrected text only, no explanation.",
+                agent=fixtext_agent
+            )
+            crew = Crew(agents=[fixtext_agent], tasks=[task], verbose=False)
+            fixed = str(crew.kickoff()).strip()
+            print(f"\n[FIXTEXT] Corrected: {fixed}\n")
+            # Offer to speak it
+            speak_it = input("Speak the corrected text? (y/n): ").strip().lower()
+            if speak_it == "y":
+                speak(fixed)
             continue
         elif category == "FILE":
             file_agent(user_input)
