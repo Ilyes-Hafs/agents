@@ -5,12 +5,18 @@ import sys
 import requests
 
 # ── Models ──────────────────────────────────────────────
-router_llm  = LLM(model="ollama/qwen2.5:3b",          base_url="http://localhost:11434")
-coder_llm   = LLM(model="ollama/qwen2.5-coder:7b",    base_url="http://localhost:11434")
-math_llm    = LLM(model="ollama/deepseek-r1:7b",       base_url="http://localhost:11434")
-general_llm = LLM(model="ollama/llama3.2:3b",          base_url="http://localhost:11434")
+router_llm = LLM(model="ollama/qwen2.5:3b",
+                 base_url="http://localhost:11434")
+coder_llm = LLM(model="ollama/qwen2.5-coder:7b",
+                base_url="http://localhost:11434")
+math_llm = LLM(model="ollama/deepseek-r1:7b",
+               base_url="http://localhost:11434")
+general_llm = LLM(model="ollama/llama3.2:3b",
+                  base_url="http://localhost:11434")
 
 # ── SearXNG search function ──────────────────────────────
+
+
 def searxng_search(query: str) -> str:
     try:
         r = requests.get(
@@ -29,6 +35,7 @@ def searxng_search(query: str) -> str:
     except Exception as e:
         return f"Search error: {e}"
 
+
 # ── Agents ───────────────────────────────────────────────
 router = Agent(
     role="Router",
@@ -37,7 +44,10 @@ router = Agent(
 
 Rules:
 - CODE    -> writing, fixing, explaining, or debugging code
-- MATH    -> calculations, equations, logic problems
+- MATH    -> calculations, arithmetic, equations, integrals, derivatives,
+            algebra, geometry, statistics. ANY numerical calculation even
+            simple ones like "1+1", "15% of 340", "sqrt(144)". If it involves
+            numbers and operations, it's MATH not CODE.
 - SEARCH  -> current events, facts that need a web lookup
 - TTS     -> user wants specific text they wrote spoken aloud. Triggered by
              'say', 'speak', 'read this', OR when the message contains quoted
@@ -73,8 +83,15 @@ coder = Agent(
 
 math_agent = Agent(
     role="Math & Reasoning Specialist",
-    goal="Solve math problems and logic puzzles step by step.",
-    backstory="Expert mathematician and logical thinker.",
+    goal="Solve math problems and logic puzzles with full step-by-step working.",
+    backstory="""You are an expert mathematician. Always solve problems like a textbook:
+- State the method you will use
+- Break the solution into clearly numbered steps
+- Show all intermediate calculations and simplifications
+- Explain what you are doing at each step and why
+- Box or clearly state the final answer
+- If the problem involves a function, describe its key properties (domain, range, extrema, etc.)
+- Mention any relevant theorems or identities used""",
     llm=math_llm
 )
 
@@ -117,6 +134,8 @@ Output ONLY the corrected text — no explanation, no commentary, no quotes arou
 )
 
 # ── Router logic ─────────────────────────────────────────
+
+
 def route(user_input: str) -> str:
     task = Task(
         description=f"Classify this request into one word: '{user_input}'",
@@ -130,22 +149,15 @@ def route(user_input: str) -> str:
             return keyword
     return "GENERAL"
 
-# ── Prompt improver ───────────────────────────────────────
-def maybe_improve_prompt(user_input: str) -> str:
-    if len(user_input.split()) < 10:
-        task = Task(
-            description=f"Rewrite this as a clearer, more detailed prompt: '{user_input}'",
-            expected_output="An improved prompt only, no explanation.",
-            agent=prompter
-        )
-        crew = Crew(agents=[prompter], tasks=[task], verbose=False)
-        improved = str(crew.kickoff()).strip()
-        if improved and improved != user_input:
-            print(f"[PROMPT] -> {improved}\n")
-            return improved
+# ── Prompt improver (disabled — agents handle prompts natively) ──
+
+
+def maybe_improve_prompt(user_input: str, category: str) -> str:
     return user_input
 
 # ── TTS helpers ───────────────────────────────────────────
+
+
 def speak(text: str):
     """Speak text with interactive voice/language picker."""
     try:
@@ -156,13 +168,15 @@ def speak(text: str):
         print(f"[TTS] Error: {e}")
 
 # ── READ agent — fetch content then speak it ──────────────
+
+
 def read_agent(user_input: str):
     print("[READ] Fetching content...\n")
 
     # Step 1: generate/retrieve the content
     task = Task(
         description=f"The user wants this text retrieved or written to be read aloud: '{user_input}'. "
-                    f"Provide ONLY the raw text content — no commentary, no 'Here is', just the text itself.",
+        f"Provide ONLY the raw text content — no commentary, no 'Here is', just the text itself.",
         expected_output="Raw text content only, ready to be spoken aloud.",
         agent=reader
     )
@@ -179,8 +193,11 @@ def read_agent(user_input: str):
     # Step 3: speak with voice picker
     speak(content)
 
+
 # ── File agent (create + convert) ────────────────────────
-CONVERT_KEYWORDS = ["convert", "export", "change format", "turn into", "transform", "save as"]
+CONVERT_KEYWORDS = ["convert", "export",
+                    "change format", "turn into", "transform", "save as"]
+
 
 def file_agent(user_input: str):
     is_convert = any(kw in user_input.lower() for kw in CONVERT_KEYWORDS)
@@ -209,12 +226,14 @@ def file_agent(user_input: str):
 
     else:
         print("[FILE] Create mode")
-        filename = input("Filename (e.g. notes.md, script.py, hello.txt): ").strip()
+        filename = input(
+            "Filename (e.g. notes.md, script.py, hello.txt): ").strip()
         if not filename:
             print("[FILE] No filename given, cancelled.")
             return
 
-        save_path = input("Save to folder (default: ~/Documents): ").strip() or "~/Documents"
+        save_path = input(
+            "Save to folder (default: ~/Documents): ").strip() or "~/Documents"
         save_path = os.path.expanduser(save_path)
         os.makedirs(save_path, exist_ok=True)
 
@@ -222,8 +241,10 @@ def file_agent(user_input: str):
 
         generate = input("Generate content with AI? (y/n): ").strip().lower()
         if generate == "y":
-            prompt = input("Describe what the file should contain: ").strip() or user_input
-            agent = coder if ext in [".py", ".js", ".ts", ".sh", ".c", ".cpp", ".rs", ".go"] else general
+            prompt = input(
+                "Describe what the file should contain: ").strip() or user_input
+            agent = coder if ext in [".py", ".js", ".ts",
+                                     ".sh", ".c", ".cpp", ".rs", ".go"] else general
             task = Task(
                 description=f"Write the full content for a file called '{filename}'. Request: {prompt}. Output ONLY the file content, no explanation.",
                 expected_output="Raw file content only.",
@@ -246,7 +267,8 @@ def file_agent(user_input: str):
             f.write(content)
         print(f"[FILE] Created -> {full_path}")
 
-        fmt = input("Also convert to another format? (pdf/docx/leave blank to skip): ").strip().lower()
+        fmt = input(
+            "Also convert to another format? (pdf/docx/leave blank to skip): ").strip().lower()
         if fmt:
             out = os.path.splitext(full_path)[0] + "." + fmt
             cmd = ["pandoc", full_path, "-o", out]
@@ -259,6 +281,8 @@ def file_agent(user_input: str):
                 print(f"[FILE] Convert error:\n{result.stderr}")
 
 # ── Read agent (search → extract → speak) ────────────────
+
+
 def read_agent(user_input: str):
     print("[READ] Searching for content...\n")
 
@@ -288,8 +312,10 @@ Output ONLY the raw text to be spoken.""",
     from tts import speak_interactive
     speak_interactive(clean_text)
 
+
 # ── Aider agent ──────────────────────────────────────────
 AIDER_BIN = "/home/ilyes/.venvs/aider/bin/aider"
+
 
 def run_aider(user_input: str):
     project = input("Project path (default: current dir): ").strip() or "."
@@ -301,7 +327,57 @@ def run_aider(user_input: str):
     subprocess.run([AIDER_BIN], cwd=project)
     print("\n[AIDER] Back in local AI\n")
 
+# ── Graph plotter ─────────────────────────────────────────
+
+
+def try_plot(expression: str, title: str = ""):
+    try:
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        # Ask for range
+        x_range = input(
+            "X range? (e.g. -10 10, default: -10 10): ").strip() or "-10 10"
+        parts = x_range.split()
+        x_min, x_max = float(parts[0]), float(parts[1])
+
+        x = np.linspace(x_min, x_max, 1000)
+
+        # Safe eval with numpy available
+        allowed = {"x": x, "np": np, "sin": np.sin, "cos": np.cos,
+                   "tan": np.tan, "exp": np.exp, "log": np.log,
+                   "sqrt": np.sqrt, "pi": np.pi, "e": np.e,
+                   "abs": np.abs, "sinh": np.sinh, "cosh": np.cosh,
+                   "tanh": np.tanh, "arcsin": np.arcsin,
+                   "arccos": np.arccos, "arctan": np.arctan}
+        y = eval(expression, {"__builtins__": {}}, allowed)
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(x, y, color="#00d4ff", linewidth=2)
+        plt.axhline(0, color="#64748b", linewidth=0.8)
+        plt.axvline(0, color="#64748b", linewidth=0.8)
+        plt.grid(True, alpha=0.2, color="#1e2d3d")
+        plt.title(title or expression, color="white", fontsize=12)
+        plt.xlabel("x", color="white")
+        plt.ylabel("y", color="white")
+        plt.facecolor = "#070a0f"
+        plt.gca().set_facecolor("#0d1117")
+        plt.gcf().set_facecolor("#070a0f")
+        plt.tick_params(colors="white")
+        for spine in plt.gca().spines.values():
+            spine.set_edgecolor("#1e2d3d")
+        plt.tight_layout()
+        plt.savefig(os.path.expanduser("~/Pictures/graph.png"),
+                    dpi=150, facecolor="#070a0f")
+        plt.show()
+        print("[MATH] Graph saved as graph.png\n")
+    except Exception as e:
+        print(f"[MATH] Could not plot: {e}")
+        print("[MATH] Tip: use numpy syntax e.g. 'np.sin(x)', 'x**2', 'np.exp(-x**2)'")
+
 # ── Main loop ────────────────────────────────────────────
+
+
 def main():
     print("🤖 Local AI ready. Type your question (or 'exit'):\n")
     while True:
@@ -311,16 +387,24 @@ def main():
         if not user_input:
             continue
 
-        # Auto-improve short/vague inputs before routing
-        user_input = maybe_improve_prompt(user_input)
-
         category = route(user_input)
         print(f"[Router -> {category}]\n")
+
+        # Improve prompt only for CODE and MATH
+        user_input = maybe_improve_prompt(user_input, category)
 
         if category == "CODE":
             agent, desc = coder, f"Answer this coding request: {user_input}"
         elif category == "MATH":
-            agent, desc = math_agent, f"Solve this: {user_input}"
+            agent, desc = math_agent, f"""Solve this step by step: {user_input}
+
+Show your full working:
+- State the method (e.g. integration by parts, substitution, chain rule, etc.)
+- Number each step clearly
+- Show all intermediate calculations
+- Explain what you are doing at each step
+- State the final answer clearly at the end
+- Mention any theorems or identities used"""
         elif category == "SEARCH":
             print("[Searching...]\n")
             search_results = searxng_search(user_input)
@@ -358,7 +442,8 @@ def main():
             fixed = str(crew.kickoff()).strip()
             print(f"\n[FIXTEXT] Corrected: {fixed}\n")
             # Offer to speak it
-            speak_it = input("Speak the corrected text? (y/n): ").strip().lower()
+            speak_it = input(
+                "Speak the corrected text? (y/n): ").strip().lower()
             if speak_it == "y":
                 speak(fixed)
             continue
@@ -371,10 +456,19 @@ def main():
         else:
             agent, desc = general, f"Answer this: {user_input}"
 
-        task = Task(description=desc, expected_output="A helpful response.", agent=agent)
+        task = Task(
+            description=desc, expected_output="A helpful, detailed response.", agent=agent)
         crew = Crew(agents=[agent], tasks=[task], verbose=False)
         result = crew.kickoff()
         print(f"\nAssistant: {result}\n")
+
+        # Offer to plot graph after MATH answers
+        if category == "MATH":
+            plot = input(
+                "Plot a graph? Enter a Python math expression or leave blank to skip: ").strip()
+            if plot:
+                try_plot(plot, user_input)
+
 
 if __name__ == "__main__":
     main()
