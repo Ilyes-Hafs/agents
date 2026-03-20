@@ -4,3 +4,5 @@ kokoro-v0_19.onnx
 voices-v1.0.bin
 voices.bin
 __pycache__/
+piper_models/
+.webui_secret_key
