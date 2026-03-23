@@ -727,6 +727,7 @@
 
   <div class="sidebar-status">
     <div class="status-item"><div class="status-dot"></div> Ollama — Running</div>
+    <div class="status-item"><div class="status-dot"></div> Local AI Stack — :7860</div>
     <div class="status-item"><div class="status-dot"></div> Open WebUI — :8080</div>
     <div class="status-item"><div class="status-dot"></div> SearXNG — :8888</div>
     <div class="status-item"><div class="status-dot offline"></div> ComfyUI — Manual</div>
@@ -741,6 +742,7 @@
   <div class="nav-section">
     <div class="nav-label">Tools</div>
     <a class="nav-item" href="#agents"><span class="nav-icon">🤖</span> AI Agents</a>
+    <a class="nav-item" href="#webapp"><span class="nav-icon">🖥</span> Web App</a>
     <a class="nav-item" href="#webui"><span class="nav-icon">🌐</span> Open WebUI</a>
     <a class="nav-item" href="#searxng"><span class="nav-icon">🔍</span> SearXNG</a>
     <a class="nav-item" href="#tts"><span class="nav-icon">🔊</span> Voice (TTS)</a>
@@ -780,6 +782,7 @@
     <div class="topbar-path">Local AI Stack / <span>by Ilyes Hafs</span></div>
     <div class="topbar-actions">
       <a class="topbar-btn" href="https://github.com/Ilyes-Hafs/agents" target="_blank">🐙 GitHub</a>
+      <a class="topbar-btn" href="http://localhost:7860" target="_blank">🤖 Local AI</a>
       <a class="topbar-btn" href="http://localhost:8080" target="_blank">⬡ WebUI</a>
       <a class="topbar-btn" href="http://localhost:8888" target="_blank">🔍 Search</a>
       <a class="topbar-btn" href="http://localhost:8188" target="_blank">🎨 ComfyUI</a>
@@ -802,7 +805,7 @@
         <div class="stat-label">AI Models</div>
       </div>
       <div class="stat">
-        <div class="stat-num">10</div>
+        <div class="stat-num">11</div>
         <div class="stat-label">Tools</div>
       </div>
       <div class="stat">
@@ -848,9 +851,9 @@
       </div>
       <div class="card fade-in">
         <div class="card-label">General + Search + TTS</div>
-        <div class="card-title">llama3.2:3b</div>
-        <div class="card-desc">Fast general-purpose assistant. Handles writing, translation, summaries, search synthesis, text correction, and content retrieval for the READ route.</div>
-        <div class="card-badge badge-green">2.0 GB</div>
+        <div class="card-title">qwen2.5:7b</div>
+        <div class="card-desc">Capable general-purpose assistant. Handles writing, translation, summaries, search synthesis, text correction, file analysis, and content retrieval for the READ route.</div>
+        <div class="card-badge badge-green">4.7 GB</div>
       </div>
     </div>
 
@@ -858,7 +861,7 @@
       <div class="alert-icon">ℹ</div>
       <div class="alert-content">
         <div class="alert-title">How routing works</div>
-        Every message passes through the router model which outputs exactly one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>READ</code>, <code>FIXTEXT</code>, <code>FILE</code>, <code>AIDER</code>, or <code>GENERAL</code>. The appropriate specialist model then loads and handles the request. Only one model occupies VRAM at a time — Ollama handles loading and unloading automatically.
+        Every message passes through the router model which outputs exactly one word: <code>CODE</code>, <code>MATH</code>, <code>SEARCH</code>, <code>TTS</code>, <code>READ</code>, <code>FIXTEXT</code>, <code>ANALYZE</code>, <code>FILE</code>, <code>AIDER</code>, or <code>GENERAL</code>. The appropriate specialist model then loads and handles the request. Only one model occupies VRAM at a time — Ollama handles loading and unloading automatically.
       </div>
     </div>
   </section>
@@ -926,11 +929,11 @@
       <div class="section-title-group">
         <div class="section-num">03 — AI Agents</div>
         <div class="section-title">main.py — The Brain</div>
-        <div class="section-subtitle">Terminal-based multi-agent system with intelligent routing</div>
+        <div class="section-subtitle">Terminal-based multi-agent system with memory, profile, and intelligent routing</div>
       </div>
     </div>
 
-    <p>The main agent system is the primary terminal interface for all AI tasks. It uses a two-stage pipeline: your input is first <strong>classified by the router</strong>, then handled by the <strong>appropriate specialist model</strong>. Built with <a href="https://docs.crewai.com" target="_blank" style="color:var(--accent)">CrewAI</a> and <a href="https://ollama.com/library" target="_blank" style="color:var(--accent)">Ollama</a>.</p>
+    <p>The main agent system is the primary terminal interface for all AI tasks. It uses a two-stage pipeline: your input is first <strong>classified by the router</strong>, then handled by the <strong>appropriate specialist model</strong>. It supports persistent memory, user profiles, session logging, and file analysis. Built with <a href="https://docs.crewai.com" target="_blank" style="color:var(--accent)">CrewAI</a> and <a href="https://ollama.com/library" target="_blank" style="color:var(--accent)">Ollama</a>.</p>
 
     <h3>All available routes</h3>
     <div class="card-grid">
@@ -943,19 +946,19 @@
       <div class="card">
         <div class="card-label">MATH</div>
         <div class="card-title">🧮 Math Specialist</div>
-        <div class="card-desc">Solves math step by step with full working, method explanation, and theorems. Uses <strong>deepseek-r1:7b</strong>. After answering, offers to plot a graph.</div>
+        <div class="card-desc">Solves math step by step with full working, method explanation, and theorems. Uses <strong>deepseek-r1:7b</strong>. After answering, offers to plot a graph saved to <code>~/Pictures/graph.png</code>.</div>
         <div class="card-badge badge-amber">integrals / derivatives / equations</div>
       </div>
       <div class="card">
         <div class="card-label">SEARCH</div>
         <div class="card-title">🔍 Web Search</div>
-        <div class="card-desc">Queries SearXNG for current information, synthesizes an answer using <strong>llama3.2:3b</strong>. For time-sensitive facts only.</div>
+        <div class="card-desc">Queries SearXNG for current information, synthesizes an answer using <strong>qwen2.5:7b</strong>. For time-sensitive facts only — stable knowledge goes to GENERAL.</div>
         <div class="card-badge badge-green">current events / versions / prices</div>
       </div>
       <div class="card">
         <div class="card-label">TTS</div>
         <div class="card-title">🔊 Text to Speech</div>
-        <div class="card-desc">Speaks text you provide directly. Extracts quoted text automatically. Shows interactive language and voice picker before speaking.</div>
+        <div class="card-desc">Speaks text you provide directly. Extracts quoted text automatically. Shows interactive language and voice picker. English uses Kokoro, other languages use Piper.</div>
         <div class="card-badge badge-blue">say / speak / "quoted text"</div>
       </div>
       <div class="card">
@@ -967,13 +970,19 @@
       <div class="card">
         <div class="card-label">FIXTEXT</div>
         <div class="card-title">✏️ Text Corrector</div>
-        <div class="card-desc">Fixes punctuation, grammar, and syntax errors in text you provide. Shows corrected version and optionally speaks it.</div>
+        <div class="card-desc">Fixes punctuation, grammar, and syntax errors in text you provide. Shows corrected version and optionally speaks it aloud.</div>
         <div class="card-badge badge-green">fix my text / correct this</div>
+      </div>
+      <div class="card">
+        <div class="card-label">ANALYZE</div>
+        <div class="card-title">🔎 File Analyzer</div>
+        <div class="card-desc">Reads and analyzes any file or folder you point it to — Python files, text, PDFs, folders with code. Summarizes content and answers questions about it.</div>
+        <div class="card-badge badge-amber">analyze ~/path/to/file</div>
       </div>
       <div class="card">
         <div class="card-label">FILE</div>
         <div class="card-title">📄 File Agent</div>
-        <div class="card-desc">Creates new files with AI-generated content or converts existing files between formats using Pandoc.</div>
+        <div class="card-desc">Creates new files with AI-generated content or converts existing files between formats using Pandoc and XeLaTeX.</div>
         <div class="card-badge badge-amber">create a file / convert / export</div>
       </div>
       <div class="card">
@@ -985,41 +994,46 @@
       <div class="card">
         <div class="card-label">GENERAL</div>
         <div class="card-title">💬 General Assistant</div>
-        <div class="card-desc">Handles everything else — writing, translation, summaries, explanations, definitions. Uses <strong>llama3.2:3b</strong>.</div>
+        <div class="card-desc">Handles everything else — writing, translation, summaries, explanations, definitions, simple arithmetic. Uses <strong>qwen2.5:7b</strong>. Uses memory and profile context.</div>
         <div class="card-badge badge-green">everything else</div>
       </div>
     </div>
 
-    <h3>How to use it</h3>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <div class="step-title">Activate the virtual environment and start</div>
-          <div class="step-desc">Run <code>source ~/.venvs/agents/bin/activate.fish</code> then <code>python ~/agents/main.py</code>. The <code>agents</code> shell alias handles both steps automatically.</div>
-        </div>
+    <h3>Memory, Profile & Logging</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Persistent Memory</div>
+        <div class="card-title">💾 Session History</div>
+        <div class="card-desc">Last 20 exchanges saved to <code>~/agents/memory.json</code>. Last 6 injected as context into every GENERAL and CODE response so the agent remembers previous messages.</div>
+        <div class="card-badge badge-blue">auto-saved per message</div>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <div class="step-title">Ask anything naturally</div>
-          <div class="step-desc">No need to specify which model to use. The router classifies your input and loads the right specialist automatically.</div>
-        </div>
+      <div class="card">
+        <div class="card-label">User Profile</div>
+        <div class="card-title">👤 Personal Context</div>
+        <div class="card-desc">Your profile is loaded from <code>~/agents/profile.json</code> on every startup. Edit it to tell the agent your name, language, interests, and any permanent context.</div>
+        <div class="card-badge badge-green">~/agents/profile.json</div>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <div class="step-title">Watch the routing label</div>
-          <div class="step-desc">Each response is prefixed with <code>[Router → CATEGORY]</code> so you can see which specialist handled it.</div>
-        </div>
+      <div class="card">
+        <div class="card-label">Session Logs</div>
+        <div class="card-title">📋 Daily Logs</div>
+        <div class="card-desc">Every question and answer logged with timestamp to <code>~/agents/logs/YYYY-MM-DD.log</code>. Type <code>logs</code> in the agent to list log files.</div>
+        <div class="card-badge badge-amber">~/agents/logs/</div>
       </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-content">
-          <div class="step-title">Type <code>exit</code> to quit</div>
-          <div class="step-desc">Or press Ctrl+C. The session ends and the virtual environment deactivates.</div>
-        </div>
+    </div>
+
+    <h3>Built-in commands</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — built-in commands</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
       </div>
+      <pre>help          <span class="cm"># show all commands and routes</span>
+memory        <span class="cm"># show recent conversation history</span>
+clear memory  <span class="cm"># wipe memory.json</span>
+profile       <span class="cm"># show your profile</span>
+logs          <span class="cm"># list log files</span>
+exit          <span class="cm"># quit</span></pre>
     </div>
 
     <h3>Example session</h3>
@@ -1036,22 +1050,24 @@ You: <span class="fn">write a binary search in Python</span>
 <span class="cm"># Math with step-by-step working + graph offer</span>
 You: <span class="fn">primitive of 1/cos^2(x)</span>
 [Router → <span class="kw">MATH</span>]
-<span class="cm"># deepseek-r1 shows full working with steps...</span>
-Plot a graph? Enter a Python math expression or leave blank to skip: <span class="str">1/np.cos(x)**2</span>
-X range? (e.g. -10 10, default: -10 10): <span class="str">-1.5 1.5</span>
-<span class="cm"># graph window opens, saved to ~/Pictures/graph.png</span>
+Plot a graph? <span class="str">1/np.cos(x)**2</span>
+X range? <span class="str">-1.5 1.5</span>
 
-<span class="cm"># Fix text then optionally speak it</span>
+<span class="cm"># Analyze a file or folder</span>
+You: <span class="fn">analyze ~/agents/main.py</span>
+[Router → <span class="kw">ANALYZE</span>]
+
+<span class="cm"># Fix text and optionally speak it</span>
 You: <span class="fn">fix my text "its a beautifull day isnt it"</span>
 [Router → <span class="kw">FIXTEXT</span>]
-[FIXTEXT] Corrected: It's a beautiful day, isn't it?
-Speak the corrected text? (y/n): <span class="str">y</span>
+[FIXTEXT] It's a beautiful day, isn't it?
+Speak it? (y/n): <span class="str">y</span>
 
-<span class="cm"># Read external content aloud</span>
-You: <span class="fn">read me the first paragraph of don quixote</span>
-[Router → <span class="kw">READ</span>]
-[READ] Fetching content...
-<span class="cm"># voice picker appears, then audio plays</span>
+<span class="cm"># Memory works across messages</span>
+You: <span class="fn">my favorite language is Python</span>
+You: <span class="fn">what is my favorite language</span>
+[Router → <span class="kw">GENERAL</span>]
+Assistant: Your favorite language is Python.
 
 You: <span class="fn">exit</span></pre>
     </div>
@@ -1061,6 +1077,86 @@ You: <span class="fn">exit</span></pre>
       <div class="alert-content">
         <div class="alert-title">First response is slow</div>
         The router model takes 2–4 seconds to load into VRAM on first run. Subsequent questions in the same session are faster as models stay loaded.
+      </div>
+    </div>
+  </section>
+
+  <!-- WEB APP -->
+  <section class="section" id="webapp">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🖥</div>
+      <div class="section-title-group">
+        <div class="section-num">03b — Web App</div>
+        <div class="section-title">app.py — Browser Interface</div>
+        <div class="section-subtitle">FastAPI + WebSocket — works on desktop and mobile</div>
+      </div>
+    </div>
+
+    <p>A lightweight browser-based interface for the same AI agents as <code>main.py</code>. Built with FastAPI and WebSockets — no external CDN dependencies, loads instantly on any device including mobile. Access it at <code>http://localhost:7860</code> on desktop or <code>http://192.168.0.20:7860</code> on your phone over local WiFi.</p>
+
+    <h3>Features</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Real-time</div>
+        <div class="card-title">WebSocket chat</div>
+        <div class="card-desc">Responses stream via WebSocket — no page refresh needed. Shows a thinking indicator while the AI processes your request.</div>
+        <div class="card-badge badge-blue">Instant updates</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Mobile-ready</div>
+        <div class="card-title">Works on any device</div>
+        <div class="card-desc">No external CDN — loads in under 1 second on mobile. Add to home screen via Chrome for a native app experience. Hamburger menu on small screens.</div>
+        <div class="card-badge badge-green">http://192.168.0.20:7860</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Side panels</div>
+        <div class="card-title">Memory, Profile, Logs, Server</div>
+        <div class="card-desc">Right panel shows live memory updates, your profile, today's log, and server controls — stop the server or generate a public share link.</div>
+        <div class="card-badge badge-amber">4 tabs</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Markdown</div>
+        <div class="card-title">Rich code rendering</div>
+        <div class="card-desc">Built-in markdown renderer with code blocks, bold, lists, and headers. Code responses display in properly formatted, scrollable blocks.</div>
+        <div class="card-badge badge-purple">No extra dependencies</div>
+      </div>
+    </div>
+
+    <h3>Usage</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+        <span class="code-filename">terminal — start web app</span>
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="cm"># Start the web app</span>
+python ~/agents/app.py
+
+<span class="cm"># Or launch from app launcher — search "Local AI Stack"</span>
+
+<span class="cm"># Access on desktop</span>
+http://localhost:7860
+
+<span class="cm"># Access on mobile (same WiFi)</span>
+http://192.168.0.20:7860
+
+<span class="cm"># Make public (anyone can access for 72h)</span>
+GRADIO_SHARE=true python ~/agents/app.py</pre>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-icon">ℹ</div>
+      <div class="alert-content">
+        <div class="alert-title">App launcher</div>
+        The web app is registered as a desktop application. Search "Local AI Stack" in your app launcher (Wofi/Rofi) to launch it without opening a terminal. The browser opens automatically at <code>localhost:7860</code>.
+      </div>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-content">
+        <div class="alert-title">Mobile access requires firewall rule</div>
+        To access from your phone, allow port 7860 through ufw: <code>sudo ufw allow from 192.168.0.0/24 to any port 7860</code>. This only allows local network devices, not the internet.
       </div>
     </div>
   </section>
@@ -2338,12 +2434,13 @@ general_llm = <span class="fn">LLM</span>(model=<span class="str">"ollama/llama3
           </tr>
         </thead>
         <tbody>
-          <tr><td><code>qwen2.5:3b</code></td><td>1.9 GB</td><td>~2 GB</td><td>Router / general</td><td>main.py router</td></tr>
-          <tr><td><code>qwen2.5-coder:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Code generation</td><td>main.py, Aider, Continue.dev</td></tr>
-          <tr><td><code>deepseek-r1:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Math & reasoning</td><td>main.py math agent</td></tr>
-          <tr><td><code>llama3.2:3b</code></td><td>2.0 GB</td><td>~2 GB</td><td>General + search</td><td>main.py, WebUI</td></tr>
+          <tr><td><code>qwen2.5:3b</code></td><td>1.9 GB</td><td>~2 GB</td><td>Router</td><td>main.py router, app.py router</td></tr>
+          <tr><td><code>qwen2.5-coder:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Code generation</td><td>main.py, app.py, Aider, Continue.dev</td></tr>
+          <tr><td><code>deepseek-r1:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Math & reasoning</td><td>main.py math agent, app.py math agent</td></tr>
+          <tr><td><code>qwen2.5:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>General + search + analysis</td><td>main.py, app.py, WebUI</td></tr>
           <tr><td><code>llava:7b</code></td><td>4.7 GB</td><td>~4.5 GB</td><td>Image understanding</td><td>WebUI only</td></tr>
-          <tr><td><code>kokoro-onnx</code></td><td>~300 MB</td><td>0 (CPU)</td><td>Text to speech</td><td>tts command, main.py</td></tr>
+          <tr><td><code>kokoro-onnx</code></td><td>~300 MB</td><td>0 (CPU)</td><td>TTS — English voices</td><td>tts.py, main.py, app.py</td></tr>
+          <tr><td><code>piper (es/fr/it/zh)</code></td><td>~50 MB each</td><td>0 (CPU)</td><td>TTS — non-English voices</td><td>tts.py, main.py, app.py</td></tr>
           <tr><td><code>sdxl-turbo</code></td><td>6.0 GB</td><td>~6 GB</td><td>Image generation</td><td>ComfyUI</td></tr>
         </tbody>
       </table>
